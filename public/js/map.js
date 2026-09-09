@@ -141,20 +141,33 @@ const GameMap = {
      * @param {Object} matchData — full match detail data
      * @param {Object} filters — current filter state
      * @param {number|null} timeLimit — if set, only show events up to this time (ms)
+     * @param {string|null} focusedPlayerId — if set, highlight this player's route
      */
-    renderMatch(matchData, filters, timeLimit = null) {
+    renderMatch(matchData, filters, timeLimit = null, focusedPlayerId = null) {
         this.clearAll();
 
         if (!matchData || !matchData.players) return;
 
         const players = Object.values(matchData.players);
 
+        // Sort so focused player or human players render on top
+        players.sort((a, b) => {
+            if (a.id === focusedPlayerId) return 1;
+            if (b.id === focusedPlayerId) return -1;
+            if (a.human && !b.human) return 1;
+            if (!a.human && b.human) return -1;
+            return 0;
+        });
+
         players.forEach(player => {
             const isHuman = player.human;
+            const isFocused = focusedPlayerId === player.id;
 
-            // Check visibility filters
-            if (isHuman && !filters.showHumans) return;
-            if (!isHuman && !filters.showBots) return;
+            // Check visibility filters (focused player always visible)
+            if (!isFocused) {
+                if (isHuman && !filters.showHumans) return;
+                if (!isHuman && !filters.showBots) return;
+            }
 
             // Get path points, filtered by time if needed
             let pathPoints = player.path;
@@ -167,10 +180,21 @@ const GameMap = {
             // Convert to Leaflet [lat, lng] format = [y, x] in our pixel system
             const latLngs = pathPoints.map(p => [p[1], p[0]]);
 
-            // Draw glowing path polyline
-            const color = isHuman ? Utils.PLAYER_COLORS.human : Utils.PLAYER_COLORS.bot;
-            const weight = isHuman ? 3 : 1.5;
-            const opacity = isHuman ? 0.95 : 0.45;
+            // Style: Focused player gets bright gold, humans get cyber cyan, bots get subtle slate
+            let color = isHuman ? Utils.PLAYER_COLORS.human : Utils.PLAYER_COLORS.bot;
+            let weight = isHuman ? 3.5 : 1.5;
+            let opacity = isHuman ? 0.95 : 0.45;
+
+            if (focusedPlayerId) {
+                if (isFocused) {
+                    color = '#f5ee38'; // High-visibility golden yellow
+                    weight = 5;
+                    opacity = 1.0;
+                } else {
+                    opacity = isHuman ? 0.4 : 0.15;
+                    weight = isHuman ? 2 : 1;
+                }
+            }
 
             const polyline = L.polyline(latLngs, {
                 color: color,
@@ -178,14 +202,21 @@ const GameMap = {
                 opacity: opacity,
                 smoothFactor: 1,
                 lineJoin: 'round',
-                className: isHuman ? 'human-player-path' : 'bot-player-path'
+                className: isFocused ? 'focused-player-path' : (isHuman ? 'human-player-path' : 'bot-player-path')
             });
 
             // Add tooltip with player info
-            polyline.bindTooltip(`<strong>${player.display}</strong> (${isHuman ? 'Human Operative' : 'Bot AI'})`, {
+            polyline.bindTooltip(`<strong>${player.display}</strong> (${isHuman ? 'Human Operative' : 'Bot AI'})${isFocused ? ' [FOCUSED]' : ''}`, {
                 sticky: true,
                 className: 'player-tooltip',
                 direction: 'top',
+            });
+
+            // Clicking path focuses the player
+            polyline.on('click', () => {
+                if (typeof App !== 'undefined' && App.focusPlayer) {
+                    App.focusPlayer(player.id);
+                }
             });
 
             this.pathLayers.addLayer(polyline);
@@ -193,13 +224,18 @@ const GameMap = {
             // Draw start marker (radar ping ring)
             if (latLngs.length > 0) {
                 const startMarker = L.circleMarker(latLngs[0], {
-                    radius: isHuman ? 5 : 3.5,
+                    radius: isFocused ? 7 : (isHuman ? 5 : 3.5),
                     color: color,
                     fillColor: color,
                     fillOpacity: 1,
                     weight: 2,
                 });
                 startMarker.bindTooltip(`${player.display} (Drop/Spawn)`, { direction: 'top', className: 'player-tooltip' });
+                startMarker.on('click', () => {
+                    if (typeof App !== 'undefined' && App.focusPlayer) {
+                        App.focusPlayer(player.id);
+                    }
+                });
                 this.pathLayers.addLayer(startMarker);
             }
 
@@ -250,5 +286,9 @@ const GameMap = {
                 this.eventLayers.addLayer(marker);
             });
         });
+
+        // Ensure route polylines and markers render crisply above POIs and base layers
+        if (this.pathLayers) this.pathLayers.bringToFront();
+        if (this.eventLayers) this.eventLayers.bringToFront();
     },
 };
