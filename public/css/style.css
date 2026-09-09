@@ -1,0 +1,372 @@
+/* CSS Reset / Normalize */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body, h1, h2, h3, h4, p, figure, blockquote, dl, dd {
+    margin: 0;
+}
+
+/* Variables */
+:root {
+    --bg-dark: #1a1a2e;
+    --bg-panel: #16213e;
+    --bg-card: #0f3460;
+    --accent: #e94560;
+    --accent2: #00d2ff;
+    --text: #e0e0e0;
+    --text-dim: #888;
+    --border: #333;
+}
+
+/* Basic Body Styles */
+body {
+    background-color: var(--bg-dark);
+    color: var(--text);
+    font-family: system-ui, -apple-system, sans-serif;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Top Bar */
+.top-bar {
+    height: 48px;
+    background-color: var(--bg-panel);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.top-bar h1 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--accent2);
+    letter-spacing: 0.5px;
+}
+
+#stats-bar {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+}
+
+/* Main Content Layout */
+.main-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Sidebar */
+#sidebar {
+    width: 300px;
+    background-color: var(--bg-dark);
+    padding: 20px;
+    overflow-y: auto;
+    border-right: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 20px 0;
+}
+
+/* Section Headers */
+#sidebar section h2 {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    color: var(--accent);
+    margin-bottom: 12px;
+}
+
+/* Form Elements */
+.filter-group {
+    margin-bottom: 15px;
+}
+
+.filter-group label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-bottom: 5px;
+}
+
+select {
+    width: 100%;
+    background-color: var(--bg-panel);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 8px;
+    outline: none;
+    font-family: inherit;
+    font-size: 0.9rem;
+}
+
+select:focus {
+    border-color: var(--accent2);
+}
+
+/* Checkboxes and Radios */
+.checkbox-group, .radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.checkbox-group label, .radio-group label {
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.checkbox-group label:hover, .radio-group label:hover {
+    color: white;
+}
+
+input[type="checkbox"], input[type="radio"] {
+    margin-right: 8px;
+    accent-color: var(--accent);
+}
+
+/* Info Panel */
+.info-panel {
+    background-color: var(--bg-card);
+    padding: 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    margin-top: 15px;
+    min-height: 40px;
+    border: 1px solid var(--border);
+}
+
+/* Playback Controls */
+.playback-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.play-btn {
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.play-btn:hover {
+    background-color: #ff5e78;
+}
+
+.speed-controls {
+    display: flex;
+    gap: 5px;
+}
+
+.speed-btn {
+    background-color: var(--bg-panel);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 4px 10px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.speed-btn:hover {
+    background-color: var(--bg-card);
+}
+
+.speed-btn.active {
+    background-color: var(--accent2);
+    color: var(--bg-dark);
+    border-color: var(--accent2);
+}
+
+.timeline-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#timeline-slider {
+    flex: 1;
+    accent-color: var(--accent2);
+}
+
+#time-display {
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+    min-width: 40px;
+    text-align: right;
+}
+
+/* Map Container */
+.map-container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    background-color: #111;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .main-content {
+        flex-direction: column;
+    }
+    #sidebar {
+        width: 100%;
+        max-height: 40vh;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+}
+
+/* Match Info Grid */
+.match-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-label {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-value {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+/* Event color classes */
+.human-color { color: var(--accent2); }
+.bot-color { color: #888; }
+.kill-color { color: #ff1744; }
+.death-color { color: #ff6d00; }
+.storm-color { color: #aa00ff; }
+.loot-color { color: #00e676; }
+
+/* Stats bar */
+#stats-bar {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.stat strong {
+    color: var(--text);
+}
+
+.stat-sep {
+    color: var(--border);
+}
+
+/* Dim text */
+.dim {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+/* Leaflet tooltip overrides */
+.player-tooltip,
+.event-tooltip {
+    background: rgba(22, 33, 62, 0.95) !important;
+    border: 1px solid var(--accent2) !important;
+    color: var(--text) !important;
+    font-size: 0.8rem !important;
+    padding: 4px 8px !important;
+    border-radius: 4px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+}
+
+.event-tooltip {
+    border-color: var(--accent) !important;
+}
+
+.leaflet-tooltip-top:before {
+    border-top-color: rgba(22, 33, 62, 0.95) !important;
+}
+
+/* Play button states */
+.play-btn {
+    font-size: 1.2rem;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.play-btn.playing {
+    background-color: var(--accent2);
+    color: var(--bg-dark);
+}
+
+/* Playback section layout improvements */
+.playback-controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Leaflet background fix */
+.leaflet-container {
+    background: #111 !important;
+}
+
+/* Scrollbar styling for sidebar */
+#sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+#sidebar::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+
+#sidebar::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+}
+
+#sidebar::-webkit-scrollbar-thumb:hover {
+    background: var(--text-dim);
+}
+
+/* Legend marker indicators */
+.checkbox-group label,
+.radio-group label {
+    position: relative;
+    padding-left: 4px;
+}
