@@ -124,10 +124,13 @@
 
         <!-- Main Map Area -->
         <main class="map-container">
-            <!-- Floating Map HUD Legend -->
+            <!-- Floating Map HUD Legend & Quick View Controls -->
             <div class="map-hud-overlay">
                 <div class="hud-panel">
-                    <div class="hud-title"><span>📡</span> Tactical Radar Legend</div>
+                    <div class="hud-header-actions">
+                        <div class="hud-title"><span>📡</span> Tactical Radar</div>
+                        <button id="btn-fit-map" class="hud-action-btn" title="Fit Entire Map to Viewport (Google Maps Full View)">⛶ Fit Map</button>
+                    </div>
                     <div class="hud-legend-items">
                         <div class="legend-row"><span class="legend-dot" style="background:#00d2ff; box-shadow: 0 0 6px #00d2ff;"></span> Human Operative</div>
                         <div class="legend-row"><span class="legend-dot" style="background:#8b9bb4;"></span> Patrol Bot AI</div>
