@@ -74,12 +74,16 @@ const Filters = {
             GameMap.loadMap(mapVal);
         }
 
-        // Clear match info
-        this.updateMatchInfo(null);
-
-        // Notify app of filter change
-        if (typeof App !== 'undefined' && App.onFilterChange) {
-            App.onFilterChange();
+        // Auto-select first match if available so player route map renders immediately
+        if (this.filteredMatches.length > 0) {
+            const firstMatch = this.filteredMatches[0];
+            this.els.matchFilter.value = firstMatch.id;
+            this.onMatchSelect();
+        } else {
+            this.updateMatchInfo(null);
+            if (typeof App !== 'undefined' && App.onFilterChange) {
+                App.onFilterChange();
+            }
         }
     },
 
