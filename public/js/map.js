@@ -7,7 +7,9 @@ const GameMap = {
     imageOverlay: null,
     pathLayers: null,      // L.layerGroup for player paths
     eventLayers: null,     // L.layerGroup for event markers
+    annotationLayers: null,// L.layerGroup for POI zones & labels
     currentMap: null,
+    showAnnotations: true,
 
     /**
      * Initialize the Leaflet map with CRS.Simple
@@ -23,6 +25,7 @@ const GameMap = {
         });
 
         // Initialize layer groups
+        this.annotationLayers = L.layerGroup().addTo(this.map);
         this.pathLayers = L.layerGroup().addTo(this.map);
         this.eventLayers = L.layerGroup().addTo(this.map);
 
@@ -50,15 +53,79 @@ const GameMap = {
         }
 
         // Add new minimap image
-        // In Leaflet CRS.Simple, bounds are [y, x] = [lat, lng]
         const bounds = [[0, 0], [Utils.IMAGE_SIZE, Utils.IMAGE_SIZE]];
         this.imageOverlay = L.imageOverlay(config.image, bounds).addTo(this.map);
 
         // Fit view to image bounds
         this.map.fitBounds(bounds);
 
-        // Clear existing layers
+        // Clear player & event layers
         this.clearAll();
+
+        // Render tactical POI zones and labels matching design mockup
+        this.renderAnnotations();
+    },
+
+    /**
+     * Render POI zones, polygons, and military style labels
+     */
+    renderAnnotations() {
+        this.annotationLayers.clearLayers();
+        if (!this.showAnnotations || !this.currentMap || typeof MapAnnotations === 'undefined') return;
+
+        const mapData = MapAnnotations[this.currentMap];
+        if (!mapData) return;
+
+        // 1. Render Polygons for Zones
+        if (mapData.zones) {
+            mapData.zones.forEach(zone => {
+                const polygon = L.polygon(zone.coords, {
+                    color: zone.color,
+                    fillColor: zone.fillColor,
+                    fillOpacity: 0.38,
+                    weight: 2.5,
+                    dashArray: '3, 4',
+                    className: 'tactical-zone-polygon'
+                });
+                polygon.bindTooltip(`<strong>${zone.name}</strong><br><span style="font-size:0.75rem;color:#ccc;">Tactical Sector</span>`, {
+                    direction: 'top',
+                    className: 'player-tooltip'
+                });
+                this.annotationLayers.addLayer(polygon);
+
+                // Add prominent POI Text Label centered or positioned on zone
+                const labelIcon = L.divIcon({
+                    className: 'zone-poi-label-container',
+                    html: `<div class="zone-poi-label zone-${zone.type || 'orange'}">${zone.name}</div>`,
+                    iconSize: [160, 24],
+                    iconAnchor: [80, 12]
+                });
+                const marker = L.marker(zone.labelPos || zone.coords[0], { icon: labelIcon, interactive: false });
+                this.annotationLayers.addLayer(marker);
+            });
+        }
+
+        // 2. Render Text-only Area Labels
+        if (mapData.labels) {
+            mapData.labels.forEach(lbl => {
+                const labelIcon = L.divIcon({
+                    className: 'area-poi-label-container',
+                    html: `<div class="area-poi-label">${lbl.name}</div>`,
+                    iconSize: [160, 24],
+                    iconAnchor: [80, 12]
+                });
+                const marker = L.marker(lbl.pos, { icon: labelIcon, interactive: false });
+                this.annotationLayers.addLayer(marker);
+            });
+        }
+    },
+
+    /**
+     * Toggle display of POI annotations
+     */
+    toggleAnnotations(show) {
+        this.showAnnotations = show;
+        this.renderAnnotations();
     },
 
     /**
@@ -100,10 +167,10 @@ const GameMap = {
             // Convert to Leaflet [lat, lng] format = [y, x] in our pixel system
             const latLngs = pathPoints.map(p => [p[1], p[0]]);
 
-            // Draw path polyline
+            // Draw glowing path polyline
             const color = isHuman ? Utils.PLAYER_COLORS.human : Utils.PLAYER_COLORS.bot;
-            const weight = isHuman ? 2.5 : 1.5;
-            const opacity = isHuman ? 0.8 : 0.4;
+            const weight = isHuman ? 3 : 1.5;
+            const opacity = isHuman ? 0.95 : 0.45;
 
             const polyline = L.polyline(latLngs, {
                 color: color,
@@ -111,10 +178,11 @@ const GameMap = {
                 opacity: opacity,
                 smoothFactor: 1,
                 lineJoin: 'round',
+                className: isHuman ? 'human-player-path' : 'bot-player-path'
             });
 
             // Add tooltip with player info
-            polyline.bindTooltip(player.display, {
+            polyline.bindTooltip(`<strong>${player.display}</strong> (${isHuman ? 'Human Operative' : 'Bot AI'})`, {
                 sticky: true,
                 className: 'player-tooltip',
                 direction: 'top',
@@ -122,17 +190,30 @@ const GameMap = {
 
             this.pathLayers.addLayer(polyline);
 
-            // Draw start marker (small circle)
+            // Draw start marker (radar ping ring)
             if (latLngs.length > 0) {
                 const startMarker = L.circleMarker(latLngs[0], {
-                    radius: 4,
+                    radius: isHuman ? 5 : 3.5,
                     color: color,
                     fillColor: color,
                     fillOpacity: 1,
-                    weight: 1,
+                    weight: 2,
                 });
-                startMarker.bindTooltip(`${player.display} (start)`, { direction: 'top' });
+                startMarker.bindTooltip(`${player.display} (Drop/Spawn)`, { direction: 'top', className: 'player-tooltip' });
                 this.pathLayers.addLayer(startMarker);
+            }
+
+            // Current player location marker (head of path) during playback
+            if (timeLimit !== null && latLngs.length > 0) {
+                const currentPos = latLngs[latLngs.length - 1];
+                const headMarker = L.circleMarker(currentPos, {
+                    radius: isHuman ? 6 : 4,
+                    color: '#ffffff',
+                    fillColor: color,
+                    fillOpacity: 1,
+                    weight: 2.5,
+                });
+                this.pathLayers.addLayer(headMarker);
             }
 
             // Draw event markers
@@ -152,12 +233,17 @@ const GameMap = {
                     radius: style.radius,
                     color: style.color,
                     fillColor: style.color,
-                    fillOpacity: 0.85,
+                    fillOpacity: 0.9,
                     weight: 2,
+                    className: 'tactical-event-marker'
                 });
 
                 marker.bindTooltip(
-                    `${style.icon} ${style.label}<br>${player.display}<br>${Utils.formatTime(evt.t)}`,
+                    `<div class="event-popup-content">
+                        <span class="event-badge" style="background:${style.color};">${style.icon} ${style.label}</span>
+                        <div class="event-target">${player.display}</div>
+                        <div class="event-time">Time: ${Utils.formatTime(evt.t)}</div>
+                    </div>`,
                     { direction: 'top', className: 'event-tooltip' }
                 );
 

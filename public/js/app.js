@@ -42,6 +42,13 @@ const App = {
                 el.addEventListener('change', () => this.refreshDisplay());
             });
 
+        const poiToggle = document.getElementById('toggle-poi');
+        if (poiToggle) {
+            poiToggle.addEventListener('change', (e) => {
+                GameMap.toggleAnnotations(e.target.checked);
+            });
+        }
+
         // Set default heatmap map
         Heatmap.setMap('AmbroseValley');
 

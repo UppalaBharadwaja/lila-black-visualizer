@@ -3,102 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LILA BLACK — Player Journey Visualizer</title>
+    <title>LILA BLACK — Tactical Player Journey Visualizer</title>
+    <!-- Tactical Fonts & Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="dark-theme">
+    <!-- Top HUD Header -->
     <header class="top-bar">
-        <h1>LILA BLACK — Player Journey Visualizer</h1>
-        <div id="stats-bar"></div>
+        <div class="brand-wrapper">
+            <span class="brand-logo-badge">LILA BLACK</span>
+            <h1>Level Design <span>Telemetry HUD</span></h1>
+        </div>
+        <div id="stats-bar">
+            <!-- Populated dynamically by app.js -->
+        </div>
     </header>
+
+    <!-- Main Content Container -->
     <div class="main-content">
+        <!-- Sidebar Controls -->
         <aside id="sidebar">
-            <section class="filters-section">
-                <h2>Filters</h2>
+            <!-- 1. Map & Match Filters -->
+            <section class="sidebar-panel">
+                <h2>Telemetry Filters</h2>
                 <div class="filter-group">
-                    <label for="map-filter">Map</label>
+                    <label for="map-filter">Tactical Sector / Map</label>
                     <select id="map-filter">
-                        <option value="">All Maps</option>
-                        <option value="AmbroseValley">AmbroseValley</option>
-                        <option value="GrandRift">GrandRift</option>
+                        <option value="">All Sectors (Overview)</option>
+                        <option value="AmbroseValley">Ambrose Valley</option>
+                        <option value="GrandRift">Grand Rift</option>
                         <option value="Lockdown">Lockdown</option>
                     </select>
                 </div>
                 <div class="filter-group">
-                    <label for="date-filter">Date</label>
+                    <label for="date-filter">Deployment Date</label>
                     <select id="date-filter">
-                        <option value="">All Dates</option>
+                        <option value="">All Deployments</option>
                     </select>
                 </div>
                 <div class="filter-group">
-                    <label for="match-filter">Match</label>
+                    <label for="match-filter">Engagement Match ID</label>
                     <select id="match-filter">
-                        <option value="">Select Match</option>
+                        <option value="">Select Engagement</option>
                     </select>
                 </div>
                 <div id="match-info" class="info-panel">
-                    <!-- Match details will go here -->
+                    <p class="dim" style="font-family: var(--font-mono); font-size: 0.78rem;">Select a match to load mission telemetry</p>
                 </div>
             </section>
-            
-            <hr class="divider">
-            
-            <section class="display-section">
-                <h2>Display</h2>
-                <div class="checkbox-group">
-                    <label><input type="checkbox" id="toggle-humans" checked> Show Humans</label>
-                    <label><input type="checkbox" id="toggle-bots" checked> Show Bots</label>
+
+            <!-- 2. Display Toggles -->
+            <section class="sidebar-panel">
+                <h2>Visual Layers</h2>
+                <div class="checkbox-grid" style="margin-bottom: 8px;">
+                    <label><input type="checkbox" id="toggle-humans" checked> <span class="human-color">●</span> Humans</label>
+                    <label><input type="checkbox" id="toggle-bots" checked> <span class="bot-color">●</span> Bots (AI)</label>
                 </div>
-                <div class="checkbox-group">
-                    <label><input type="checkbox" id="toggle-kills" checked> Kills</label>
-                    <label><input type="checkbox" id="toggle-deaths" checked> Deaths</label>
-                    <label><input type="checkbox" id="toggle-loot" checked> Loot</label>
-                    <label><input type="checkbox" id="toggle-storm" checked> Storm Deaths</label>
+                <div class="checkbox-grid" style="margin-bottom: 8px;">
+                    <label><input type="checkbox" id="toggle-kills" checked> <span class="kill-color">⚔</span> Kills</label>
+                    <label><input type="checkbox" id="toggle-deaths" checked> <span class="death-color">💀</span> Deaths</label>
+                </div>
+                <div class="checkbox-grid" style="margin-bottom: 8px;">
+                    <label><input type="checkbox" id="toggle-loot" checked> <span class="loot-color">📦</span> Loot</label>
+                    <label><input type="checkbox" id="toggle-storm" checked> <span class="storm-color">⚡</span> Storm</label>
+                </div>
+                <div style="border-top: 1px dashed var(--border-light); padding-top: 8px; margin-top: 4px;">
+                    <label><input type="checkbox" id="toggle-poi" checked> <span style="color: var(--tac-yellow);">⚑</span> POI Zones & Labels</label>
                 </div>
             </section>
-            
-            <hr class="divider">
-            
-            <section class="heatmap-section">
-                <h2>Heatmap</h2>
+
+            <!-- 3. Heatmap Overlays -->
+            <section class="sidebar-panel danger-accent">
+                <h2>Thermal Intel Overlay</h2>
                 <div class="radio-group">
-                    <label><input type="radio" name="heatmap-mode" value="none" checked> None</label>
-                    <label><input type="radio" name="heatmap-mode" value="kills"> Kill Zones</label>
-                    <label><input type="radio" name="heatmap-mode" value="deaths"> Death Zones</label>
-                    <label><input type="radio" name="heatmap-mode" value="traffic"> Traffic</label>
-                    <label><input type="radio" name="heatmap-mode" value="loot"> Loot Spots</label>
+                    <label><input type="radio" name="heatmap-mode" value="none" checked> None (Satellite View)</label>
+                    <label><input type="radio" name="heatmap-mode" value="kills"> <span class="kill-color">⚔</span> Hot Kill Zones</label>
+                    <label><input type="radio" name="heatmap-mode" value="deaths"> <span class="death-color">💀</span> Casualty Death Zones</label>
+                    <label><input type="radio" name="heatmap-mode" value="traffic"> <span style="color: #fffa65;">⚲</span> High-Traffic Corridors</label>
+                    <label><input type="radio" name="heatmap-mode" value="loot"> <span class="loot-color">📦</span> Concentrated Loot Spots</label>
                 </div>
             </section>
-            
-            <hr class="divider">
-            
-            <section id="playback-panel" class="playback-section">
-                <h2>Playback</h2>
+
+            <!-- 4. Playback Timeline -->
+            <section id="playback-panel" class="sidebar-panel warning-accent">
+                <h2>Timeline Scrubbing</h2>
                 <div class="playback-controls">
-                    <button id="play-btn" class="play-btn">▶</button>
-                    <div class="speed-controls">
-                        <button class="speed-btn active" data-speed="1">1x</button>
-                        <button class="speed-btn" data-speed="2">2x</button>
-                        <button class="speed-btn" data-speed="4">4x</button>
-                        <button class="speed-btn" data-speed="8">8x</button>
+                    <div class="playback-btn-row">
+                        <button id="play-btn" class="play-btn" title="Toggle Play / Pause">▶</button>
+                        <div class="speed-controls">
+                            <button class="speed-btn active" data-speed="1">1X</button>
+                            <button class="speed-btn" data-speed="2">2X</button>
+                            <button class="speed-btn" data-speed="4">4X</button>
+                            <button class="speed-btn" data-speed="8">8X</button>
+                        </div>
                     </div>
-                </div>
-                <div class="timeline-container">
-                    <input type="range" id="timeline-slider" min="0" max="1000" value="0">
-                    <span id="time-display">0:00</span>
+                    <div class="timeline-container">
+                        <input type="range" id="timeline-slider" min="0" max="1000" value="0">
+                        <span id="time-display">0:00 / 0:00</span>
+                    </div>
                 </div>
             </section>
         </aside>
-        
+
+        <!-- Main Map Area -->
         <main class="map-container">
+            <!-- Floating Map HUD Legend -->
+            <div class="map-hud-overlay">
+                <div class="hud-panel">
+                    <div class="hud-title"><span>📡</span> Tactical Radar Legend</div>
+                    <div class="hud-legend-items">
+                        <div class="legend-row"><span class="legend-dot" style="background:#00d2ff; box-shadow: 0 0 6px #00d2ff;"></span> Human Operative</div>
+                        <div class="legend-row"><span class="legend-dot" style="background:#8b9bb4;"></span> Patrol Bot AI</div>
+                        <div class="legend-row"><span class="legend-dot" style="background:#ff4757; box-shadow: 0 0 6px #ff4757;"></span> Combat Elimination (Kill)</div>
+                        <div class="legend-row"><span class="legend-dot" style="background:#ffa502;"></span> Operative Down (Death)</div>
+                        <div class="legend-row"><span class="legend-dot" style="background:#2ed573;"></span> Equipment Cache (Loot)</div>
+                        <div class="legend-row"><span class="legend-dot" style="background:#9b59b6;"></span> Storm Barrier Casualty</div>
+                    </div>
+                </div>
+            </div>
+
             <div id="map"></div>
         </main>
     </div>
 
+    <!-- Scripts -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
     <script src="js/utils.js"></script>
+    <script src="js/map_annotations.js"></script>
     <script src="js/map.js"></script>
     <script src="js/filters.js"></script>
     <script src="js/timeline.js"></script>
