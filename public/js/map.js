@@ -12,33 +12,45 @@ const GameMap = {
     showAnnotations: true, // Enabled for maps without baked-in names; GrandRift auto-suppresses duplicates
 
     /**
-     * Initialize the Leaflet map with CRS.Simple
+     * Initialize the Leaflet map with CRS.Simple and Google Maps-like interaction
      */
     init() {
         // CRS.Simple — pixel-based coordinate system
         this.map = L.map('map', {
             crs: L.CRS.Simple,
-            minZoom: -2,
+            minZoom: -1,
             maxZoom: 4,
-            zoomControl: true,
+            zoomSnap: 0.1,         // Smooth Google Maps-like fluid zoom levels
+            zoomDelta: 0.5,
+            wheelPxPerZoomLevel: 90,
+            zoomControl: false,    // We add custom tactical zoom buttons or positioned control
             attributionControl: false,
+            // Prevent panning off into infinite black void
+            maxBounds: [[-120, -120], [1144, 1144]],
+            maxBoundsViscosity: 0.85
         });
+
+        // Add sleek zoom control in bottom-right corner like modern maps
+        L.control.zoom({ position: 'bottomright' }).addTo(this.map);
 
         // Initialize layer groups
         this.annotationLayers = L.layerGroup().addTo(this.map);
         this.pathLayers = L.layerGroup().addTo(this.map);
         this.eventLayers = L.layerGroup().addTo(this.map);
 
-        // Set initial view
-        const bounds = [[0, 0], [Utils.IMAGE_SIZE, Utils.IMAGE_SIZE]];
-        this.map.fitBounds(bounds);
+        // Resize listener to ensure map always invalidates and fills viewport seamlessly
+        window.addEventListener('resize', () => {
+            if (this.map) {
+                this.map.invalidateSize();
+            }
+        });
 
         // Load default map
         this.loadMap('AmbroseValley');
     },
 
     /**
-     * Load a minimap image as the background
+     * Load a minimap image as the background and fit to panel viewport
      */
     loadMap(mapId) {
         if (this.currentMap === mapId) return;
@@ -52,18 +64,68 @@ const GameMap = {
             this.map.removeLayer(this.imageOverlay);
         }
 
-        // Add new minimap image
+        // Add new minimap image (0 to 1024)
         const bounds = [[0, 0], [Utils.IMAGE_SIZE, Utils.IMAGE_SIZE]];
         this.imageOverlay = L.imageOverlay(config.image, bounds).addTo(this.map);
 
-        // Fit view to image bounds
-        this.map.fitBounds(bounds);
+        // Smoothly fit map to container like Google Maps (no black letterbox margins)
+        this.zoomToFit(false);
 
         // Clear player & event layers
         this.clearAll();
 
         // Render tactical POI zones and labels matching design mockup
         this.renderAnnotations();
+    },
+
+    /**
+     * Seamlessly fit the map into the right panel container like Google Maps
+     * Calculates container aspect ratio and fills the entire available area
+     */
+    zoomToFit(animate = true) {
+        if (!this.map) return;
+        this.map.invalidateSize();
+
+        const container = this.map.getContainer();
+        const width = container.clientWidth || 800;
+        const height = container.clientHeight || 600;
+
+        // Minimap is 1024x1024. In CRS.Simple at zoom 0, 1024 units = 1024 px.
+        // To fit the full map into the right panel seamlessly:
+        const zoomX = Math.log2(width / Utils.IMAGE_SIZE);
+        const zoomY = Math.log2(height / Utils.IMAGE_SIZE);
+        // Using Math.max fills the container completely (edge-to-edge full bleed like Google Maps)
+        // With Math.min, padding ensures it's fully framed without huge letterboxing
+        const fitZoom = Math.max(zoomX, zoomY, -0.8);
+
+        if (animate) {
+            this.map.flyTo([512, 512], fitZoom, { duration: 0.65 });
+        } else {
+            this.map.setView([512, 512], fitZoom);
+        }
+    },
+
+    /**
+     * Smoothly fly to a tactical sector or coordinate
+     */
+    flyToSector(lat, lng, zoom = 1.0) {
+        if (!this.map) return;
+        this.map.flyTo([lat, lng], zoom, {
+            duration: 0.8,
+            easeLinearity: 0.25
+        });
+    },
+
+    /**
+     * Fly to bounds covering a player's route or active engagement area
+     */
+    flyToBounds(bounds, maxZoom = 1.8) {
+        if (!this.map) return;
+        this.map.flyToBounds(bounds, {
+            padding: [50, 50],
+            maxZoom: maxZoom,
+            duration: 0.85
+        });
     },
 
     /**
@@ -87,12 +149,15 @@ const GameMap = {
             mapData.zones.forEach(zone => {
                 const labelIcon = L.divIcon({
                     className: 'clean-map-poi-container',
-                    html: `<div class="clean-map-poi-label">${zone.name}</div>`,
+                    html: `<div class="clean-map-poi-label" title="Click to zoom to ${zone.name}">${zone.name}</div>`,
                     iconSize: [220, 24],
                     iconAnchor: [110, 12]
                 });
                 const pos = zone.labelPos || zone.coords[0];
-                const marker = L.marker(pos, { icon: labelIcon, interactive: false });
+                const marker = L.marker(pos, { icon: labelIcon, interactive: true });
+                marker.on('click', () => {
+                    this.flyToSector(pos[0], pos[1], 1.6);
+                });
                 this.annotationLayers.addLayer(marker);
             });
         }
@@ -102,11 +167,14 @@ const GameMap = {
             mapData.labels.forEach(lbl => {
                 const labelIcon = L.divIcon({
                     className: 'clean-map-poi-container',
-                    html: `<div class="clean-map-poi-label">${lbl.name}</div>`,
+                    html: `<div class="clean-map-poi-label" title="Click to zoom to ${lbl.name}">${lbl.name}</div>`,
                     iconSize: [220, 24],
                     iconAnchor: [110, 12]
                 });
-                const marker = L.marker(lbl.pos, { icon: labelIcon, interactive: false });
+                const marker = L.marker(lbl.pos, { icon: labelIcon, interactive: true });
+                marker.on('click', () => {
+                    this.flyToSector(lbl.pos[0], lbl.pos[1], 1.6);
+                });
                 this.annotationLayers.addLayer(marker);
             });
         }

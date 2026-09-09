@@ -49,6 +49,13 @@ const App = {
             });
         }
 
+        const fitMapBtn = document.getElementById('btn-fit-map');
+        if (fitMapBtn) {
+            fitMapBtn.addEventListener('click', () => {
+                GameMap.zoomToFit(true);
+            });
+        }
+
         // Set default heatmap map
         Heatmap.setMap('AmbroseValley');
 
@@ -194,7 +201,7 @@ const App = {
     },
 
     /**
-     * Focus or isolate a single player's route
+     * Focus or isolate a single player's route with Google Maps-like auto-zoom
      */
     focusPlayer(playerId) {
         this.focusedPlayerId = playerId;
@@ -204,6 +211,20 @@ const App = {
         const timeLimit = Timeline.playing ? Timeline.currentTime :
                          (Timeline.currentTime > 0 ? Timeline.currentTime : null);
         this.renderCurrentMatch(timeLimit);
+
+        // Google Maps-like dynamic zoom:
+        if (playerId && this.matchData && this.matchData.players[playerId]) {
+            const player = this.matchData.players[playerId];
+            if (player.path && player.path.length > 0) {
+                // Calculate bounding box of player's journey
+                const latLngs = player.path.map(p => [1024 - p[1], p[0]]);
+                const bounds = L.latLngBounds(latLngs);
+                GameMap.flyToBounds(bounds.pad(0.15), 2.2);
+            }
+        } else {
+            // Reset to fit full map into the viewport
+            GameMap.zoomToFit(true);
+        }
     },
 
     /**
@@ -272,6 +293,8 @@ const App = {
                 type: 'spawn',
                 time: Utils.formatTime(startPt[2]),
                 location: startSector,
+                lat: 1024 - startPt[1],
+                lng: startPt[0],
                 achievement: '🎖 Stage 1: Drop & Initial Recon Infiltration'
             });
         }
@@ -300,6 +323,8 @@ const App = {
                 type: cssClass,
                 time: Utils.formatTime(evt.t),
                 location: sector,
+                lat: 1024 - evt.y,
+                lng: evt.x,
                 achievement: achievementText
             });
         });
@@ -313,16 +338,18 @@ const App = {
                 type: isDead ? 'combat' : 'loot',
                 time: Utils.formatTime(endPt[2]),
                 location: endSector,
+                lat: 1024 - endPt[1],
+                lng: endPt[0],
                 achievement: isDead ? `💀 Final Position: Mission Terminated at ${endSector}` : `🏆 Extraction Objective: Survived Match Duration at ${endSector}`
             });
         }
 
         container.innerHTML = `
             <div style="font-size:0.75rem; color:var(--accent2); margin-bottom:6px; font-weight:700;">
-                OPERATIVE ${targetPlayer.display} (${stages.length} Milestones)
+                OPERATIVE ${targetPlayer.display} (${stages.length} Milestones — Click to Fly)
             </div>
             ${stages.map((s, i) => `
-                <div class="stage-step stage-step-${s.type}">
+                <div class="stage-step stage-step-${s.type}" data-idx="${i}" style="cursor: pointer;" title="Click to zoom to this sector on the map">
                     <div class="stage-header">
                         <span class="stage-location">📍 ${s.location}</span>
                         <span class="stage-time">⏱ ${s.time}</span>
@@ -331,6 +358,17 @@ const App = {
                 </div>
             `).join('')}
         `;
+
+        // Add click events to fly to stage sector
+        container.querySelectorAll('.stage-step').forEach(stepEl => {
+            stepEl.addEventListener('click', () => {
+                const idx = parseInt(stepEl.getAttribute('data-idx'));
+                const stage = stages[idx];
+                if (stage && stage.lat !== undefined && stage.lng !== undefined) {
+                    GameMap.flyToSector(stage.lat, stage.lng, 1.8);
+                }
+            });
+        });
     },
 
     /**

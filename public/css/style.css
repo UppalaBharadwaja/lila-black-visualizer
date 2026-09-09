@@ -608,16 +608,45 @@ input[type="checkbox"], input[type="radio"] {
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
 }
 
+.hud-header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
 .hud-title {
     font-size: 0.72rem;
     font-weight: 700;
     letter-spacing: 1.2px;
     text-transform: uppercase;
     color: var(--accent2);
-    margin-bottom: 8px;
+    margin-bottom: 0;
     display: flex;
     align-items: center;
     gap: 6px;
+}
+
+.hud-action-btn {
+    background: rgba(0, 210, 255, 0.15);
+    color: var(--accent2);
+    border: 1px solid var(--accent2);
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-family: var(--font-tactical);
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+}
+
+.hud-action-btn:hover {
+    background: var(--accent2);
+    color: var(--bg-black);
+    box-shadow: 0 0 10px var(--accent2-glow);
 }
 
 .hud-legend-items {
@@ -625,6 +654,33 @@ input[type="checkbox"], input[type="radio"] {
     flex-direction: column;
     gap: 6px;
     font-size: 0.8rem;
+}
+
+/* Custom Leaflet Controls - Modern Sleek Look */
+.leaflet-control-zoom {
+    border: 1px solid var(--border-light) !important;
+    border-radius: 6px !important;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6) !important;
+    margin-right: 18px !important;
+    margin-bottom: 18px !important;
+}
+
+.leaflet-control-zoom a {
+    background-color: rgba(19, 27, 38, 0.92) !important;
+    color: #fff !important;
+    border-bottom: 1px solid var(--border) !important;
+    transition: all 0.15s ease !important;
+    width: 34px !important;
+    height: 34px !important;
+    line-height: 34px !important;
+    font-family: var(--font-mono) !important;
+    font-size: 16px !important;
+}
+
+.leaflet-control-zoom a:hover {
+    background-color: var(--bg-card-hover) !important;
+    color: var(--accent2) !important;
 }
 
 .legend-row {
@@ -671,10 +727,16 @@ input[type="checkbox"], input[type="radio"] {
         1px 0 0 #000,
         0 -1px 0 #000,
         0 1px 0 #000,
-        0 3px 6px rgba(0,0,0,0.95);
     text-align: center;
     white-space: nowrap;
-    pointer-events: none;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.clean-map-poi-label:hover {
+    transform: scale(1.08);
+    filter: brightness(1.25) drop-shadow(0 0 8px rgba(245, 238, 56, 0.8));
 }
 
 /* Colored tactical zones */
