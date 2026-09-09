@@ -98,7 +98,10 @@ const Heatmap = {
 
         if (points.length === 0) return;
 
-        this.heatLayer = L.heatLayer(points, config).addTo(GameMap.map);
+        // Convert [py, px, intensity] to Leaflet CRS.Simple [1024 - py, px, intensity]
+        const leafletPoints = points.map(p => [1024 - p[0], p[1], p[2]]);
+
+        this.heatLayer = L.heatLayer(leafletPoints, config).addTo(GameMap.map);
     },
 
     /**

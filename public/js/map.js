@@ -76,43 +76,29 @@ const GameMap = {
         const mapData = MapAnnotations[this.currentMap];
         if (!mapData) return;
 
-        // 1. Render Polygons for Zones
+        // Render only clean text-only POI labels matching the original design minimap (no colored shape boxes)
         if (mapData.zones) {
             mapData.zones.forEach(zone => {
-                const polygon = L.polygon(zone.coords, {
-                    color: zone.color,
-                    fillColor: zone.fillColor,
-                    fillOpacity: 0.38,
-                    weight: 2.5,
-                    dashArray: '3, 4',
-                    className: 'tactical-zone-polygon'
-                });
-                polygon.bindTooltip(`<strong>${zone.name}</strong><br><span style="font-size:0.75rem;color:#ccc;">Tactical Sector</span>`, {
-                    direction: 'top',
-                    className: 'player-tooltip'
-                });
-                this.annotationLayers.addLayer(polygon);
-
-                // Add prominent POI Text Label centered or positioned on zone
                 const labelIcon = L.divIcon({
-                    className: 'zone-poi-label-container',
-                    html: `<div class="zone-poi-label zone-${zone.type || 'orange'}">${zone.name}</div>`,
-                    iconSize: [160, 24],
-                    iconAnchor: [80, 12]
+                    className: 'clean-map-poi-container',
+                    html: `<div class="clean-map-poi-label">${zone.name}</div>`,
+                    iconSize: [200, 24],
+                    iconAnchor: [100, 12]
                 });
-                const marker = L.marker(zone.labelPos || zone.coords[0], { icon: labelIcon, interactive: false });
+                const pos = zone.labelPos || zone.coords[0];
+                const marker = L.marker(pos, { icon: labelIcon, interactive: false });
                 this.annotationLayers.addLayer(marker);
             });
         }
 
-        // 2. Render Text-only Area Labels
+        // Render additional landmark text labels
         if (mapData.labels) {
             mapData.labels.forEach(lbl => {
                 const labelIcon = L.divIcon({
-                    className: 'area-poi-label-container',
-                    html: `<div class="area-poi-label">${lbl.name}</div>`,
-                    iconSize: [160, 24],
-                    iconAnchor: [80, 12]
+                    className: 'clean-map-poi-container',
+                    html: `<div class="clean-map-poi-label">${lbl.name}</div>`,
+                    iconSize: [200, 24],
+                    iconAnchor: [100, 12]
                 });
                 const marker = L.marker(lbl.pos, { icon: labelIcon, interactive: false });
                 this.annotationLayers.addLayer(marker);
@@ -177,8 +163,10 @@ const GameMap = {
 
             if (pathPoints.length < 2) return;
 
-            // Convert to Leaflet [lat, lng] format = [y, x] in our pixel system
-            const latLngs = pathPoints.map(p => [p[1], p[0]]);
+            // Convert to Leaflet [lat, lng] format.
+            // Minimap image overlay has bounds [[0,0], [1024, 1024]] with Leaflet CRS.Simple (0 at bottom, 1024 at top).
+            // Image coordinates have y=0 at top, so Leaflet lat = 1024 - py, Leaflet lng = px.
+            const latLngs = pathPoints.map(p => [1024 - p[1], p[0]]);
 
             // Style: Focused player gets bright gold, humans get cyber cyan, bots get subtle slate
             let color = isHuman ? Utils.PLAYER_COLORS.human : Utils.PLAYER_COLORS.bot;
@@ -265,7 +253,8 @@ const GameMap = {
                 if (evt.type === 'Loot' && !filters.showLoot) return;
                 if (evt.type === 'KilledByStorm' && !filters.showStorm) return;
 
-                const marker = L.circleMarker([evt.y, evt.x], {
+                // Leaflet CRS.Simple: lat = 1024 - evt.y, lng = evt.x
+                const marker = L.circleMarker([1024 - evt.y, evt.x], {
                     radius: style.radius,
                     color: style.color,
                     fillColor: style.color,
