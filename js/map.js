@@ -9,7 +9,7 @@ const GameMap = {
     eventLayers: null,     // L.layerGroup for event markers
     annotationLayers: null,// L.layerGroup for POI zones & labels
     currentMap: null,
-    showAnnotations: true,
+    showAnnotations: false, // Turned off to eliminate duplicate text and artificial overlay shapes
 
     /**
      * Initialize the Leaflet map with CRS.Simple
