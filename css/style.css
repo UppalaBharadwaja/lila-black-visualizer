@@ -357,6 +357,81 @@ select:focus {
     color: var(--text-dim);
 }
 
+/* Journey Stages, Sector Timeline & Achievements */
+.journey-stages-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 240px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.journey-stages-container::-webkit-scrollbar {
+    width: 4px;
+}
+
+.journey-stages-container::-webkit-scrollbar-thumb {
+    background: var(--border-light);
+    border-radius: 2px;
+}
+
+.stage-step {
+    background: var(--bg-card);
+    border-left: 3px solid var(--accent2);
+    border-radius: 0 4px 4px 0;
+    padding: 7px 10px;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    position: relative;
+    transition: all 0.15s ease;
+}
+
+.stage-step:hover {
+    background: var(--bg-card-hover);
+    border-left-color: var(--tac-yellow);
+}
+
+.stage-step-combat {
+    border-left-color: var(--accent);
+}
+
+.stage-step-loot {
+    border-left-color: var(--tac-green);
+}
+
+.stage-step-storm {
+    border-left-color: var(--tac-purple);
+}
+
+.stage-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.stage-location {
+    font-weight: 700;
+    color: var(--tac-yellow);
+    letter-spacing: 0.5px;
+}
+
+.stage-time {
+    color: var(--text-dim);
+    font-size: 0.7rem;
+}
+
+.stage-achievement {
+    font-size: 0.7rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
 /* Checkboxes & Radios */
 .checkbox-grid {
     display: grid;
@@ -571,26 +646,32 @@ input[type="checkbox"], input[type="radio"] {
    ========================================================= */
 
 .zone-poi-label-container,
-.area-poi-label-container {
+.area-poi-label-container,
+.clean-map-poi-container {
     background: transparent !important;
     border: none !important;
 }
 
-/* Yellow bold military map text with dark outline */
+/* Yellow bold military map text with dark outline matching original minimap */
 .zone-poi-label,
-.area-poi-label {
+.area-poi-label,
+.clean-map-poi-label {
     font-family: var(--font-tactical);
     font-weight: 700;
-    font-size: 0.82rem;
-    letter-spacing: 1.2px;
+    font-size: 0.88rem;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: #f7ea48; /* High-visibility yellow from the image */
+    color: #f7ea48; /* High-visibility yellow from the source image */
     text-shadow: 
-        -1.5px -1.5px 0 #000,
-        1.5px -1.5px 0 #000,
-        -1.5px 1.5px 0 #000,
-        1.5px 1.5px 0 #000,
-        0 2px 4px rgba(0,0,0,0.9);
+        -2px -2px 0 #000,
+        2px -2px 0 #000,
+        -2px 2px 0 #000,
+        2px 2px 0 #000,
+        -1px 0 0 #000,
+        1px 0 0 #000,
+        0 -1px 0 #000,
+        0 1px 0 #000,
+        0 3px 6px rgba(0,0,0,0.95);
     text-align: center;
     white-space: nowrap;
     pointer-events: none;

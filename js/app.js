@@ -122,8 +122,9 @@ const App = {
         this.matchData = data;
         this.focusedPlayerId = null;
 
-        // Populate roster
+        // Populate roster & journey progression
         this.updatePlayerRoster();
+        this.updateJourneyStages();
 
         // Update heatmap to this match's map
         Heatmap.setMap(data.map);
@@ -198,10 +199,138 @@ const App = {
     focusPlayer(playerId) {
         this.focusedPlayerId = playerId;
         this.updatePlayerRoster();
+        this.updateJourneyStages();
 
         const timeLimit = Timeline.playing ? Timeline.currentTime :
                          (Timeline.currentTime > 0 ? Timeline.currentTime : null);
         this.renderCurrentMatch(timeLimit);
+    },
+
+    /**
+     * Render chronological journey stages, achievements, and sector milestones for focused player
+     */
+    updateJourneyStages() {
+        const container = document.getElementById('journey-stages');
+        if (!container) return;
+
+        if (!this.matchData || !this.matchData.players) {
+            container.innerHTML = '<p class="dim" style="font-size:0.75rem;">No engagement selected</p>';
+            return;
+        }
+
+        const players = Object.values(this.matchData.players);
+        // Default to focused player or the primary human player
+        const targetPlayer = this.focusedPlayerId ? 
+            this.matchData.players[this.focusedPlayerId] : 
+            (players.find(p => p.human) || players[0]);
+
+        if (!targetPlayer) {
+            container.innerHTML = '<p class="dim" style="font-size:0.75rem;">Select an operative above</p>';
+            return;
+        }
+
+        const annotations = (typeof MapAnnotations !== 'undefined' && MapAnnotations[this.matchData.map]) ? MapAnnotations[this.matchData.map] : null;
+
+        // Function to find nearest POI zone/label name from pixel coords
+        const getSectorName = (px, py) => {
+            if (!annotations) return 'Open Sector';
+            let bestName = 'Tactical Sector';
+            let minDist = 999999;
+
+            const allPoints = [];
+            if (annotations.zones) {
+                annotations.zones.forEach(z => {
+                    const pos = z.labelPos || z.coords[0];
+                    allPoints.push({ name: z.name, y: pos[0], x: pos[1] });
+                });
+            }
+            if (annotations.labels) {
+                annotations.labels.forEach(l => {
+                    allPoints.push({ name: l.name, y: l.pos[0], x: l.pos[1] });
+                });
+            }
+
+            allPoints.forEach(pt => {
+                const dy = (1024 - py) - pt.y;
+                const dx = px - pt.x;
+                const d = Math.sqrt(dx * dx + dy * dy);
+                if (d < minDist) {
+                    minDist = d;
+                    bestName = pt.name;
+                }
+            });
+            return bestName;
+        };
+
+        const stages = [];
+
+        // Stage 1: Insertion / Spawn
+        if (targetPlayer.path && targetPlayer.path.length > 0) {
+            const startPt = targetPlayer.path[0];
+            const startSector = getSectorName(startPt[0], startPt[1]);
+            stages.push({
+                type: 'spawn',
+                time: Utils.formatTime(startPt[2]),
+                location: startSector,
+                achievement: '🎖 Stage 1: Drop & Initial Recon Infiltration'
+            });
+        }
+
+        // Progression stages from key events
+        targetPlayer.events.forEach((evt, idx) => {
+            const sector = getSectorName(evt.x, evt.y);
+            let achievementText = '';
+            let cssClass = 'combat';
+
+            if (evt.type === 'BotKill' || evt.type === 'Kill') {
+                achievementText = `⚔ Combat Takedown: Eliminated target in ${sector}`;
+                cssClass = 'combat';
+            } else if (evt.type === 'Loot') {
+                achievementText = `📦 Resource Cache Secured: Harvested supplies in ${sector}`;
+                cssClass = 'loot';
+            } else if (evt.type === 'Killed' || evt.type === 'BotKilled') {
+                achievementText = `💀 Operative Neutralized (KIA) in ${sector}`;
+                cssClass = 'combat';
+            } else if (evt.type === 'KilledByStorm') {
+                achievementText = `⚡ Consumed by Storm Barrier near ${sector}`;
+                cssClass = 'storm';
+            }
+
+            stages.push({
+                type: cssClass,
+                time: Utils.formatTime(evt.t),
+                location: sector,
+                achievement: achievementText
+            });
+        });
+
+        // Stage Final: Extraction or Survival
+        if (targetPlayer.path && targetPlayer.path.length > 1) {
+            const endPt = targetPlayer.path[targetPlayer.path.length - 1];
+            const endSector = getSectorName(endPt[0], endPt[1]);
+            const isDead = targetPlayer.events.some(e => e.type.includes('Kill') && (e.type.includes('ed') || e.type.includes('Storm')));
+            stages.push({
+                type: isDead ? 'combat' : 'loot',
+                time: Utils.formatTime(endPt[2]),
+                location: endSector,
+                achievement: isDead ? `💀 Final Position: Mission Terminated at ${endSector}` : `🏆 Extraction Objective: Survived Match Duration at ${endSector}`
+            });
+        }
+
+        container.innerHTML = `
+            <div style="font-size:0.75rem; color:var(--accent2); margin-bottom:6px; font-weight:700;">
+                OPERATIVE ${targetPlayer.display} (${stages.length} Milestones)
+            </div>
+            ${stages.map((s, i) => `
+                <div class="stage-step stage-step-${s.type}">
+                    <div class="stage-header">
+                        <span class="stage-location">📍 ${s.location}</span>
+                        <span class="stage-time">⏱ ${s.time}</span>
+                    </div>
+                    <div class="stage-achievement">${s.achievement}</div>
+                </div>
+            `).join('')}
+        `;
     },
 
     /**
