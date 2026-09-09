@@ -1,4 +1,10 @@
-/* CSS Reset / Normalize */
+/* =========================================================
+   LILA BLACK — TACTICAL LEVEL DESIGN HUD THEME
+   Inspired by Extraction Shooters, Military Ops & Tactical Minimaps
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,400;0,600;0,700;1,600&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
 *, *::before, *::after {
     box-sizing: border-box;
 }
@@ -7,194 +13,387 @@ body, h1, h2, h3, h4, p, figure, blockquote, dl, dd {
     margin: 0;
 }
 
-/* Variables */
 :root {
-    --bg-dark: #1a1a2e;
-    --bg-panel: #16213e;
-    --bg-card: #0f3460;
-    --accent: #e94560;
+    --bg-black: #080a0f;
+    --bg-dark: #0d1117;
+    --bg-panel: #131b26;
+    --bg-card: #182232;
+    --bg-card-hover: #1f2d42;
+    
+    --accent: #ff4757;
+    --accent-glow: rgba(255, 71, 87, 0.35);
     --accent2: #00d2ff;
-    --text: #e0e0e0;
-    --text-dim: #888;
-    --border: #333;
+    --accent2-glow: rgba(0, 210, 255, 0.35);
+    --tac-yellow: #f5ee38;
+    --tac-green: #2ed573;
+    --tac-orange: #ffa502;
+    --tac-purple: #9b59b6;
+    
+    --border: #233144;
+    --border-light: #34495e;
+    --border-glow: rgba(0, 210, 255, 0.2);
+    
+    --text: #f1f2f6;
+    --text-dim: #8b9bb4;
+    --text-muted: #576574;
+    
+    --font-tactical: 'Chakra Petch', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
 }
 
-/* Basic Body Styles */
 body {
-    background-color: var(--bg-dark);
+    background-color: var(--bg-black);
     color: var(--text);
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family: var(--font-tactical);
     height: 100vh;
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    letter-spacing: 0.3px;
+    background-image: 
+        linear-gradient(rgba(0, 210, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 210, 255, 0.02) 1px, transparent 1px);
+    background-size: 32px 32px;
 }
 
-/* Top Bar */
+/* Header Top Bar */
 .top-bar {
-    height: 48px;
-    background-color: var(--bg-panel);
+    height: 54px;
+    background: linear-gradient(180deg, #141c28 0%, #0d121b 100%);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 20px;
-    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    border-bottom: 2px solid var(--border);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+    position: relative;
+    z-index: 1000;
+}
+
+.brand-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand-logo-badge {
+    background: #ff4757;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 2px 8px;
+    border-radius: 3px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    box-shadow: 0 0 10px rgba(255, 71, 87, 0.6);
 }
 
 .top-bar h1 {
-    font-size: 1.2rem;
-    font-weight: 600;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.top-bar h1 span {
     color: var(--accent2);
-    letter-spacing: 0.5px;
+    font-weight: 600;
 }
 
 #stats-bar {
-    font-size: 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
     color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(13, 17, 23, 0.8);
+    padding: 6px 14px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
 }
 
-/* Main Content Layout */
+.stat {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.stat strong {
+    color: #fff;
+    font-weight: 700;
+}
+
+.stat-sep {
+    color: var(--border-light);
+}
+
+/* Layout */
 .main-content {
     display: flex;
     flex: 1;
     overflow: hidden;
+    position: relative;
 }
 
 /* Sidebar */
 #sidebar {
-    width: 300px;
-    background-color: var(--bg-dark);
-    padding: 20px;
+    width: 340px;
+    background: var(--bg-dark);
+    padding: 18px 16px;
     overflow-y: auto;
-    border-right: 1px solid var(--border);
+    border-right: 2px solid var(--border);
     flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.5);
+    z-index: 100;
 }
 
-.divider {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 20px 0;
+.sidebar-panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px;
+    position: relative;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
-/* Section Headers */
-#sidebar section h2 {
+.sidebar-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--accent2);
+    border-radius: 6px 0 0 6px;
+}
+
+.sidebar-panel.danger-accent::before {
+    background: var(--accent);
+}
+
+.sidebar-panel.warning-accent::before {
+    background: var(--tac-orange);
+}
+
+.sidebar-panel h2 {
     text-transform: uppercase;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #fff;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sidebar-panel h2::after {
+    content: '///';
+    color: var(--text-muted);
     font-size: 0.75rem;
-    letter-spacing: 1px;
-    color: var(--accent);
+    letter-spacing: 2px;
+}
+
+/* Inputs & Form Elements */
+.filter-group {
     margin-bottom: 12px;
 }
 
-/* Form Elements */
-.filter-group {
-    margin-bottom: 15px;
+.filter-group:last-child {
+    margin-bottom: 0;
 }
 
 .filter-group label {
     display: block;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     color: var(--text-dim);
-    margin-bottom: 5px;
+    margin-bottom: 6px;
 }
 
 select {
     width: 100%;
-    background-color: var(--bg-panel);
-    color: var(--text);
-    border: 1px solid var(--border);
+    background-color: var(--bg-card);
+    color: #fff;
+    border: 1px solid var(--border-light);
     border-radius: 4px;
-    padding: 8px;
+    padding: 8px 12px;
     outline: none;
-    font-family: inherit;
-    font-size: 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+select:hover {
+    border-color: var(--accent2);
+    background-color: var(--bg-card-hover);
 }
 
 select:focus {
     border-color: var(--accent2);
+    box-shadow: 0 0 10px var(--accent2-glow);
 }
 
-/* Checkboxes and Radios */
-.checkbox-group, .radio-group {
-    display: flex;
-    flex-direction: column;
+/* Match Info Panel */
+.info-panel {
+    background: rgba(10, 14, 20, 0.7);
+    border: 1px dashed var(--border-light);
+    border-radius: 4px;
+    padding: 10px;
+    margin-top: 12px;
+}
+
+.match-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 8px;
 }
 
-.checkbox-group label, .radio-group label {
-    display: flex;
-    align-items: center;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: color 0.2s;
+.info-item {
+    background: var(--bg-card);
+    padding: 6px 8px;
+    border-radius: 4px;
+    border-left: 2px solid var(--border-light);
 }
 
-.checkbox-group label:hover, .radio-group label:hover {
-    color: white;
+.info-label {
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+    display: block;
+}
+
+.info-value {
+    font-size: 0.95rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
+}
+
+/* Checkboxes & Radios */
+.checkbox-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.checkbox-group label,
+.radio-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    background: var(--bg-card);
+    padding: 8px 10px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    transition: all 0.15s ease;
+    user-select: none;
+}
+
+.checkbox-group label:hover,
+.radio-group label:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-light);
+    color: #fff;
+}
+
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
 input[type="checkbox"], input[type="radio"] {
-    margin-right: 8px;
-    accent-color: var(--accent);
+    accent-color: var(--accent2);
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
 }
 
-/* Info Panel */
-.info-panel {
-    background-color: var(--bg-card);
-    padding: 12px;
-    border-radius: 4px;
-    font-size: 0.85rem;
-    margin-top: 15px;
-    min-height: 40px;
-    border: 1px solid var(--border);
-}
-
-/* Playback Controls */
+/* Playback Control Bar */
 .playback-controls {
     display: flex;
     flex-direction: column;
+    gap: 12px;
+}
+
+.playback-btn-row {
+    display: flex;
+    align-items: center;
     gap: 10px;
-    margin-bottom: 15px;
 }
 
 .play-btn {
-    background-color: var(--accent);
-    color: white;
+    width: 44px;
+    height: 44px;
+    background: var(--accent);
+    color: #fff;
     border: none;
-    border-radius: 4px;
-    padding: 8px 16px;
-    font-weight: 600;
+    border-radius: 6px;
+    font-size: 1.1rem;
     cursor: pointer;
-    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 15px var(--accent-glow);
+    transition: all 0.2s ease;
+    flex-shrink: 0;
 }
 
 .play-btn:hover {
-    background-color: #ff5e78;
+    background: #ff6b81;
+    transform: scale(1.05);
+}
+
+.play-btn.playing {
+    background: var(--accent2);
+    box-shadow: 0 0 15px var(--accent2-glow);
 }
 
 .speed-controls {
     display: flex;
-    gap: 5px;
+    gap: 4px;
+    flex-grow: 1;
 }
 
 .speed-btn {
-    background-color: var(--bg-panel);
-    color: var(--text);
+    flex: 1;
+    background: var(--bg-card);
+    color: var(--text-dim);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 4px 10px;
-    font-size: 0.8rem;
+    border-radius: 4px;
+    padding: 8px 0;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.15s ease;
 }
 
 .speed-btn:hover {
-    background-color: var(--bg-card);
+    color: #fff;
+    border-color: var(--border-light);
 }
 
 .speed-btn.active {
-    background-color: var(--accent2);
-    color: var(--bg-dark);
+    background: var(--accent2);
+    color: var(--bg-black);
     border-color: var(--accent2);
+    font-weight: 700;
+    box-shadow: 0 0 10px var(--accent2-glow);
 }
 
 .timeline-container {
@@ -206,12 +405,18 @@ input[type="checkbox"], input[type="radio"] {
 #timeline-slider {
     flex: 1;
     accent-color: var(--accent2);
+    height: 6px;
+    background: var(--bg-card);
+    border-radius: 3px;
+    cursor: pointer;
 }
 
 #time-display {
+    font-family: var(--font-mono);
     font-size: 0.85rem;
-    font-variant-numeric: tabular-nums;
-    min-width: 40px;
+    color: var(--tac-yellow);
+    font-weight: 700;
+    min-width: 90px;
     text-align: right;
 }
 
@@ -220,153 +425,190 @@ input[type="checkbox"], input[type="radio"] {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
+    position: relative;
+    background: #000;
 }
 
 #map {
     width: 100%;
     height: 100%;
-    background-color: #111;
+    background-color: #05070a !important;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .main-content {
-        flex-direction: column;
-    }
-    #sidebar {
-        width: 100%;
-        max-height: 40vh;
-        border-right: none;
-        border-bottom: 1px solid var(--border);
-    }
-}
-
-/* Match Info Grid */
-.match-info-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-}
-
-.info-item {
+/* Map Floating HUD Legend & POI Toggle */
+.map-hud-overlay {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 999;
     display: flex;
     flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
 }
 
-.info-label {
-    font-size: 0.7rem;
-    color: var(--text-dim);
+.hud-panel {
+    background: rgba(13, 17, 23, 0.88);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border-light);
+    border-radius: 6px;
+    padding: 10px 14px;
+    pointer-events: auto;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+}
+
+.hud-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    color: var(--accent2);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
-.info-value {
-    font-size: 0.95rem;
-    font-weight: 600;
+.hud-legend-items {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.8rem;
 }
 
-/* Event color classes */
-.human-color { color: var(--accent2); }
-.bot-color { color: #888; }
-.kill-color { color: #ff1744; }
-.death-color { color: #ff6d00; }
-.storm-color { color: #aa00ff; }
-.loot-color { color: #00e676; }
-
-/* Stats bar */
-#stats-bar {
-    font-size: 0.85rem;
-    color: var(--text-dim);
+.legend-row {
     display: flex;
     align-items: center;
     gap: 8px;
-}
-
-.stat strong {
     color: var(--text);
 }
 
-.stat-sep {
-    color: var(--border);
+.legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
 }
 
-/* Dim text */
-.dim {
-    color: var(--text-dim);
-    font-size: 0.85rem;
-    font-style: italic;
+/* =========================================================
+   ZONE & POI ANNOTATIONS (EXACT MATCH TO DESIGN MOCKUP)
+   ========================================================= */
+
+.zone-poi-label-container,
+.area-poi-label-container {
+    background: transparent !important;
+    border: none !important;
 }
 
-/* Leaflet tooltip overrides */
+/* Yellow bold military map text with dark outline */
+.zone-poi-label,
+.area-poi-label {
+    font-family: var(--font-tactical);
+    font-weight: 700;
+    font-size: 0.82rem;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: #f7ea48; /* High-visibility yellow from the image */
+    text-shadow: 
+        -1.5px -1.5px 0 #000,
+        1.5px -1.5px 0 #000,
+        -1.5px 1.5px 0 #000,
+        1.5px 1.5px 0 #000,
+        0 2px 4px rgba(0,0,0,0.9);
+    text-align: center;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+/* Colored tactical zones */
+.tactical-zone-polygon {
+    filter: drop-shadow(0 0 6px rgba(0,0,0,0.8));
+    transition: fill-opacity 0.2s ease;
+}
+
+.tactical-zone-polygon:hover {
+    fill-opacity: 0.65 !important;
+}
+
+/* Leaflet Tooltips & Events */
 .player-tooltip,
 .event-tooltip {
-    background: rgba(22, 33, 62, 0.95) !important;
+    background: rgba(10, 15, 24, 0.95) !important;
     border: 1px solid var(--accent2) !important;
-    color: var(--text) !important;
-    font-size: 0.8rem !important;
-    padding: 4px 8px !important;
+    color: #fff !important;
+    font-family: var(--font-mono) !important;
+    font-size: 0.78rem !important;
+    padding: 6px 10px !important;
     border-radius: 4px !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6) !important;
 }
 
 .event-tooltip {
     border-color: var(--accent) !important;
 }
 
-.leaflet-tooltip-top:before {
-    border-top-color: rgba(22, 33, 62, 0.95) !important;
-}
-
-/* Play button states */
-.play-btn {
-    font-size: 1.2rem;
-    width: 48px;
-    height: 48px;
+.event-popup-content {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
+    flex-direction: column;
+    gap: 3px;
 }
 
-.play-btn.playing {
-    background-color: var(--accent2);
-    color: var(--bg-dark);
-}
-
-/* Playback section layout improvements */
-.playback-controls {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 12px;
-}
-
-/* Leaflet background fix */
-.leaflet-container {
-    background: #111 !important;
-}
-
-/* Scrollbar styling for sidebar */
-#sidebar::-webkit-scrollbar {
-    width: 6px;
-}
-
-#sidebar::-webkit-scrollbar-track {
-    background: var(--bg-dark);
-}
-
-#sidebar::-webkit-scrollbar-thumb {
-    background: var(--border);
+.event-badge {
+    display: inline-block;
+    padding: 2px 6px;
     border-radius: 3px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #fff;
+    text-transform: uppercase;
+    margin-bottom: 2px;
 }
 
-#sidebar::-webkit-scrollbar-thumb:hover {
-    background: var(--text-dim);
+.event-target {
+    font-weight: 600;
+    color: #fff;
 }
 
-/* Legend marker indicators */
-.checkbox-group label,
-.radio-group label {
-    position: relative;
-    padding-left: 4px;
+.event-time {
+    color: var(--text-dim);
+    font-size: 0.72rem;
+}
+
+/* Glowing Player Paths */
+.human-player-path {
+    filter: drop-shadow(0 0 4px rgba(0, 210, 255, 0.8));
+}
+
+.bot-player-path {
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.2));
+}
+
+/* Tactical Event Marker Pulse */
+.tactical-event-marker {
+    filter: drop-shadow(0 0 4px currentColor);
+}
+
+/* Color Classes */
+.human-color { color: var(--accent2); }
+.bot-color { color: #8b9bb4; }
+.kill-color { color: var(--accent); }
+.death-color { color: var(--tac-orange); }
+.storm-color { color: var(--tac-purple); }
+.loot-color { color: var(--tac-green); }
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+    .main-content {
+        flex-direction: column;
+    }
+    #sidebar {
+        width: 100%;
+        max-height: 45vh;
+        border-right: none;
+        border-bottom: 2px solid var(--border);
+    }
+    .map-hud-overlay {
+        top: 10px;
+        right: 10px;
+    }
 }
