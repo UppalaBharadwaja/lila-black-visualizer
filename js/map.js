@@ -9,7 +9,7 @@ const GameMap = {
     eventLayers: null,     // L.layerGroup for event markers
     annotationLayers: null,// L.layerGroup for POI zones & labels
     currentMap: null,
-    showAnnotations: false, // Turned off to eliminate duplicate text and artificial overlay shapes
+    showAnnotations: true, // Enabled for maps without baked-in names; GrandRift auto-suppresses duplicates
 
     /**
      * Initialize the Leaflet map with CRS.Simple
@@ -76,14 +76,20 @@ const GameMap = {
         const mapData = MapAnnotations[this.currentMap];
         if (!mapData) return;
 
-        // Render only clean text-only POI labels matching the original design minimap (no colored shape boxes)
+        // For GrandRift: The official sector names & artwork are already baked cleanly into the minimap PNG,
+        // so we skip duplicate overlay labels to keep Grand Rift 100% clean and pristine.
+        if (this.currentMap === 'GrandRift') {
+            return;
+        }
+
+        // For AmbroseValley & Lockdown: Render the previous annotated sector names cleanly (text labels)
         if (mapData.zones) {
             mapData.zones.forEach(zone => {
                 const labelIcon = L.divIcon({
                     className: 'clean-map-poi-container',
                     html: `<div class="clean-map-poi-label">${zone.name}</div>`,
-                    iconSize: [200, 24],
-                    iconAnchor: [100, 12]
+                    iconSize: [220, 24],
+                    iconAnchor: [110, 12]
                 });
                 const pos = zone.labelPos || zone.coords[0];
                 const marker = L.marker(pos, { icon: labelIcon, interactive: false });
@@ -91,14 +97,14 @@ const GameMap = {
             });
         }
 
-        // Render additional landmark text labels
+        // Render additional landmark text labels (e.g. RIVER CROSSING, WEST DAM & RIVER)
         if (mapData.labels) {
             mapData.labels.forEach(lbl => {
                 const labelIcon = L.divIcon({
                     className: 'clean-map-poi-container',
                     html: `<div class="clean-map-poi-label">${lbl.name}</div>`,
-                    iconSize: [200, 24],
-                    iconAnchor: [100, 12]
+                    iconSize: [220, 24],
+                    iconAnchor: [110, 12]
                 });
                 const marker = L.marker(lbl.pos, { icon: labelIcon, interactive: false });
                 this.annotationLayers.addLayer(marker);
