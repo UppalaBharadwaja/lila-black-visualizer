@@ -1,9 +1,9 @@
 /* =========================================================
-   LILA BLACK — TACTICAL LEVEL DESIGN HUD THEME
-   Inspired by Extraction Shooters, Military Ops & Tactical Minimaps
+   LILA BLACK — TACTICAL LEVEL DESIGN & VIBRANT TRAVEL HUD
+   Inspired by Bold Yellow Cover Art, Impact Typography & Dark Green Accents
    ========================================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,400;0,600;0,700;1,600&family=JetBrains+Mono:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Montserrat:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap');
 
 *, *::before, *::after {
     box-sizing: border-box;
@@ -14,58 +14,68 @@ body, h1, h2, h3, h4, p, figure, blockquote, dl, dd {
 }
 
 :root {
-    --bg-black: #080a0f;
-    --bg-dark: #0d1117;
-    --bg-panel: #131b26;
-    --bg-card: #182232;
-    --bg-card-hover: #1f2d42;
+    /* Signature Jamaica Guide Palette */
+    --brand-yellow: #fff200;       /* Vivid yellow from cover banner & bottom footer */
+    --brand-yellow-glow: rgba(255, 242, 0, 0.4);
+    --brand-yellow-dim: #e6da00;
+    --brand-green: #0a4d1c;        /* Deep jungle green title accent */
+    --brand-green-bright: #1b8a36; /* Vibrant emerald green */
+    --brand-green-glow: rgba(27, 138, 54, 0.4);
     
-    --accent: #ff4757;
-    --accent-glow: rgba(255, 71, 87, 0.35);
-    --accent2: #00d2ff;
-    --accent2-glow: rgba(0, 210, 255, 0.35);
-    --tac-yellow: #f5ee38;
-    --tac-green: #2ed573;
-    --tac-orange: #ffa502;
-    --tac-purple: #9b59b6;
+    /* Backgrounds & Panels */
+    --bg-black: #000000;          /* Deep rich black as in the PDF cover */
+    --bg-dark: #090c0a;           /* Ultra dark forest-tinted slate */
+    --bg-panel: #111713;          /* Dark panel container */
+    --bg-card: #18221b;           /* Elevated card */
+    --bg-card-hover: #223026;     /* Card hover */
     
-    --border: #233144;
-    --border-light: #34495e;
-    --border-glow: rgba(0, 210, 255, 0.2);
+    /* Accents */
+    --accent: #ff3838;            /* Alert / Kill red */
+    --accent-glow: rgba(255, 56, 56, 0.4);
+    --accent2: #fff200;           /* Primary highlight yellow */
+    --accent2-glow: rgba(255, 242, 0, 0.35);
+    --tac-yellow: #fff200;        /* Bold tactical yellow */
+    --tac-green: #2ecc71;         /* Emerald loot / survival green */
+    --tac-orange: #ff9f1a;        /* Warning orange */
+    --tac-purple: #9b59b6;        /* Storm barrier purple */
+    --tac-cyan: #00d2ff;          /* Human operative cyan */
     
-    --text: #f1f2f6;
-    --text-dim: #8b9bb4;
-    --text-muted: #576574;
+    /* Borders & Outlines */
+    --border: #223326;
+    --border-light: #344d3a;
+    --border-glow: rgba(255, 242, 0, 0.25);
     
-    --font-tactical: 'Chakra Petch', sans-serif;
+    /* Typography */
+    --text: #ffffff;
+    --text-dim: #a6b8a8;
+    --text-muted: #5e7362;
+    
+    --font-heading: 'Oswald', 'Impact', sans-serif;
+    --font-body: 'Montserrat', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
 }
 
 body {
     background-color: var(--bg-black);
     color: var(--text);
-    font-family: var(--font-tactical);
+    font-family: var(--font-body);
     height: 100vh;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    letter-spacing: 0.3px;
-    background-image: 
-        linear-gradient(rgba(0, 210, 255, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 210, 255, 0.02) 1px, transparent 1px);
-    background-size: 32px 32px;
+    letter-spacing: 0.2px;
 }
 
 /* Header Top Bar */
 .top-bar {
-    height: 54px;
-    background: linear-gradient(180deg, #141c28 0%, #0d121b 100%);
+    height: 60px;
+    background: #000000;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 24px;
-    border-bottom: 2px solid var(--border);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+    border-bottom: 3px solid var(--brand-yellow);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.8);
     position: relative;
     z-index: 1000;
 }
@@ -73,34 +83,38 @@ body {
 .brand-wrapper {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
 }
 
 .brand-logo-badge {
-    background: #ff4757;
-    color: #fff;
+    background: var(--brand-green);
+    color: var(--brand-yellow);
+    font-family: var(--font-heading);
     font-weight: 700;
-    font-size: 0.85rem;
-    padding: 2px 8px;
-    border-radius: 3px;
-    letter-spacing: 1px;
+    font-size: 1.05rem;
+    padding: 3px 10px;
+    border-radius: 4px;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    box-shadow: 0 0 10px rgba(255, 71, 87, 0.6);
+    box-shadow: 0 0 12px rgba(10, 77, 28, 0.7);
+    border: 1px solid rgba(255, 242, 0, 0.3);
 }
 
 .top-bar h1 {
-    font-size: 1.25rem;
+    font-family: var(--font-heading);
+    font-size: 1.45rem;
     font-weight: 700;
-    color: #fff;
-    letter-spacing: 1.5px;
+    color: var(--brand-yellow);
+    letter-spacing: 1px;
     text-transform: uppercase;
     display: flex;
     align-items: center;
     gap: 8px;
+    text-shadow: 0 2px 8px rgba(255, 242, 0, 0.25);
 }
 
 .top-bar h1 span {
-    color: var(--accent2);
+    color: #ffffff;
     font-weight: 600;
 }
 
@@ -111,7 +125,7 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
-    background: rgba(13, 17, 23, 0.8);
+    background: rgba(17, 23, 19, 0.85);
     padding: 6px 14px;
     border-radius: 4px;
     border: 1px solid var(--border);
@@ -142,7 +156,7 @@ body {
 
 /* Sidebar */
 #sidebar {
-    width: 340px;
+    width: 350px;
     background: var(--bg-dark);
     padding: 18px 16px;
     overflow-y: auto;
@@ -151,7 +165,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.5);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.6);
     z-index: 100;
 }
 
@@ -161,7 +175,7 @@ body {
     border-radius: 6px;
     padding: 14px;
     position: relative;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
 
 .sidebar-panel::before {
@@ -169,9 +183,9 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    width: 3px;
+    width: 4px;
     height: 100%;
-    background: var(--accent2);
+    background: var(--brand-yellow);
     border-radius: 6px 0 0 6px;
 }
 
@@ -183,12 +197,17 @@ body {
     background: var(--tac-orange);
 }
 
+.sidebar-panel.green-accent::before {
+    background: var(--brand-green-bright);
+}
+
 .sidebar-panel h2 {
+    font-family: var(--font-heading);
     text-transform: uppercase;
-    font-size: 0.82rem;
+    font-size: 1.05rem;
     font-weight: 700;
-    letter-spacing: 1.5px;
-    color: #fff;
+    letter-spacing: 1px;
+    color: var(--brand-yellow);
     margin-bottom: 12px;
     display: flex;
     align-items: center;
@@ -197,7 +216,8 @@ body {
 
 .sidebar-panel h2::after {
     content: '///';
-    color: var(--text-muted);
+    font-family: var(--font-mono);
+    color: var(--brand-green-bright);
     font-size: 0.75rem;
     letter-spacing: 2px;
 }
@@ -221,6 +241,41 @@ body {
     margin-bottom: 6px;
 }
 
+.map-nav-control {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.map-nav-btn {
+    background: var(--bg-card);
+    color: var(--brand-yellow);
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.map-nav-btn:hover {
+    background: var(--brand-yellow);
+    color: #000;
+    border-color: var(--brand-yellow);
+    box-shadow: 0 0 10px var(--brand-yellow-glow);
+    transform: scale(1.05);
+}
+
+.map-nav-btn:active {
+    transform: scale(0.95);
+}
+
 select {
     width: 100%;
     background-color: var(--bg-card);
@@ -229,20 +284,21 @@ select {
     border-radius: 4px;
     padding: 8px 12px;
     outline: none;
-    font-family: var(--font-mono);
+    font-family: var(--font-body);
+    font-weight: 600;
     font-size: 0.85rem;
     transition: all 0.2s ease;
     cursor: pointer;
 }
 
 select:hover {
-    border-color: var(--accent2);
+    border-color: var(--brand-yellow);
     background-color: var(--bg-card-hover);
 }
 
 select:focus {
-    border-color: var(--accent2);
-    box-shadow: 0 0 10px var(--accent2-glow);
+    border-color: var(--brand-yellow);
+    box-shadow: 0 0 10px var(--brand-yellow-glow);
 }
 
 /* Match Info Panel */
@@ -315,15 +371,15 @@ select:focus {
 }
 
 .player-card:hover {
-    border-color: var(--accent2);
+    border-color: var(--brand-yellow);
     background: var(--bg-card-hover);
-    transform: translateX(2px);
+    transform: translateX(3px);
 }
 
 .player-card.active-focus {
-    border-color: var(--tac-yellow);
-    background: rgba(245, 238, 56, 0.12);
-    box-shadow: 0 0 10px rgba(245, 238, 56, 0.25);
+    border-color: var(--brand-yellow);
+    background: rgba(255, 242, 0, 0.12);
+    box-shadow: 0 0 12px rgba(255, 242, 0, 0.3);
 }
 
 .player-card-left {
@@ -333,18 +389,20 @@ select:focus {
 }
 
 .player-indicator {
-    width: 8px;
-    height: 8px;
+    width: 9px;
+    height: 9px;
     border-radius: 50%;
     flex-shrink: 0;
 }
 
 .player-name {
-    font-weight: 600;
+    font-family: var(--font-body);
+    font-weight: 700;
     color: var(--text);
 }
 
 .player-tag {
+    font-family: var(--font-mono);
     font-size: 0.65rem;
     padding: 1px 5px;
     border-radius: 2px;
@@ -378,7 +436,7 @@ select:focus {
 
 .stage-step {
     background: var(--bg-card);
-    border-left: 3px solid var(--accent2);
+    border-left: 3px solid var(--brand-yellow);
     border-radius: 0 4px 4px 0;
     padding: 7px 10px;
     font-family: var(--font-mono);
@@ -392,7 +450,8 @@ select:focus {
 
 .stage-step:hover {
     background: var(--bg-card-hover);
-    border-left-color: var(--tac-yellow);
+    border-left-color: #ffffff;
+    transform: translateX(2px);
 }
 
 .stage-step-combat {
@@ -400,7 +459,7 @@ select:focus {
 }
 
 .stage-step-loot {
-    border-left-color: var(--tac-green);
+    border-left-color: var(--brand-green-bright);
 }
 
 .stage-step-storm {
@@ -540,11 +599,11 @@ input[type="checkbox"], input[type="radio"] {
 }
 
 .speed-btn.active {
-    background: var(--accent2);
-    color: var(--bg-black);
-    border-color: var(--accent2);
-    font-weight: 700;
-    box-shadow: 0 0 10px var(--accent2-glow);
+    background: var(--brand-yellow);
+    color: #000000;
+    border-color: var(--brand-yellow);
+    font-weight: 800;
+    box-shadow: 0 0 12px var(--brand-yellow-glow);
 }
 
 .timeline-container {
@@ -555,7 +614,7 @@ input[type="checkbox"], input[type="radio"] {
 
 #timeline-slider {
     flex: 1;
-    accent-color: var(--accent2);
+    accent-color: var(--brand-yellow);
     height: 6px;
     background: var(--bg-card);
     border-radius: 3px;
@@ -586,10 +645,124 @@ input[type="checkbox"], input[type="radio"] {
     background-color: #05070a !important;
 }
 
+/* Map Carousel Top Header Bar (Jamaica Travel Guide Style) */
+.map-carousel-bar {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(0, 0, 0, 0.88);
+    backdrop-filter: blur(10px);
+    border: 2px solid var(--brand-yellow);
+    border-radius: 8px;
+    padding: 6px 16px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 242, 0, 0.2);
+}
+
+.carousel-nav-btn {
+    background: var(--brand-yellow);
+    color: #000000;
+    border: none;
+    border-radius: 6px;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.carousel-nav-btn:hover {
+    background: #ffffff;
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+}
+
+.carousel-nav-btn:active {
+    transform: scale(0.92);
+}
+
+.carousel-map-title-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 180px;
+    user-select: none;
+}
+
+.carousel-subtitle {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    color: var(--brand-green-bright);
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.carousel-title {
+    font-family: var(--font-heading);
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: var(--brand-yellow);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    line-height: 1.1;
+    margin: 0;
+    text-shadow: 0 2px 8px rgba(255, 242, 0, 0.3);
+}
+
+/* Signature Yellow Bottom Banner (Direct from Jamaica Travel Guide) */
+.map-footer-yellow-banner {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 34px;
+    background: var(--brand-yellow);
+    color: #000000;
+    z-index: 998;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    border-top: 2px solid #000000;
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+}
+
+.banner-badge {
+    background: #000000;
+    color: var(--brand-yellow);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    text-transform: uppercase;
+}
+
+.banner-text {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 1.5px;
+    color: #000000;
+    text-transform: uppercase;
+}
+
 /* Map Floating HUD Legend & POI Toggle */
 .map-hud-overlay {
     position: absolute;
-    top: 16px;
+    top: 70px;
     right: 16px;
     z-index: 999;
     display: flex;
@@ -617,11 +790,12 @@ input[type="checkbox"], input[type="radio"] {
 }
 
 .hud-title {
-    font-size: 0.72rem;
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
     font-weight: 700;
-    letter-spacing: 1.2px;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    color: var(--accent2);
+    color: var(--brand-yellow);
     margin-bottom: 0;
     display: flex;
     align-items: center;
@@ -629,12 +803,12 @@ input[type="checkbox"], input[type="radio"] {
 }
 
 .hud-action-btn {
-    background: rgba(0, 210, 255, 0.15);
-    color: var(--accent2);
-    border: 1px solid var(--accent2);
+    background: rgba(255, 242, 0, 0.15);
+    color: var(--brand-yellow);
+    border: 1px solid var(--brand-yellow);
     border-radius: 4px;
     padding: 3px 8px;
-    font-family: var(--font-tactical);
+    font-family: var(--font-body);
     font-size: 0.72rem;
     font-weight: 700;
     cursor: pointer;
@@ -644,9 +818,9 @@ input[type="checkbox"], input[type="radio"] {
 }
 
 .hud-action-btn:hover {
-    background: var(--accent2);
-    color: var(--bg-black);
-    box-shadow: 0 0 10px var(--accent2-glow);
+    background: var(--brand-yellow);
+    color: #000000;
+    box-shadow: 0 0 10px var(--brand-yellow-glow);
 }
 
 .hud-legend-items {
@@ -708,16 +882,16 @@ input[type="checkbox"], input[type="radio"] {
     border: none !important;
 }
 
-/* Yellow bold military map text with dark outline matching original minimap */
+/* Yellow bold travel guide & military map text with dark outline */
 .zone-poi-label,
 .area-poi-label,
 .clean-map-poi-label {
-    font-family: var(--font-tactical);
+    font-family: var(--font-heading);
     font-weight: 700;
-    font-size: 0.88rem;
-    letter-spacing: 1.5px;
+    font-size: 1.05rem;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    color: #f7ea48; /* High-visibility yellow from the source image */
+    color: var(--brand-yellow); /* Signature vibrant yellow */
     text-shadow: 
         -2px -2px 0 #000,
         2px -2px 0 #000,
@@ -727,6 +901,7 @@ input[type="checkbox"], input[type="radio"] {
         1px 0 0 #000,
         0 -1px 0 #000,
         0 1px 0 #000,
+        0 4px 8px rgba(0,0,0,0.95);
     text-align: center;
     white-space: nowrap;
     cursor: pointer;
@@ -735,8 +910,8 @@ input[type="checkbox"], input[type="radio"] {
 }
 
 .clean-map-poi-label:hover {
-    transform: scale(1.08);
-    filter: brightness(1.25) drop-shadow(0 0 8px rgba(245, 238, 56, 0.8));
+    transform: scale(1.1);
+    filter: brightness(1.3) drop-shadow(0 0 10px rgba(255, 242, 0, 0.9));
 }
 
 /* Colored tactical zones */
