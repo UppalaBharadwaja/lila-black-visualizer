@@ -66,163 +66,211 @@ body {
     letter-spacing: 0.2px;
 }
 
-/* Header Top Bar */
-.top-bar {
-    height: 60px;
+/* Header Cover Page Banner (Signature PDF Cover Look) */
+.guide-cover-header {
     background: #000000;
+    padding: 12px 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 24px;
-    border-bottom: 3px solid var(--brand-yellow);
-    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.8);
+    border-bottom: 4px solid var(--brand-yellow);
+    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.9);
     position: relative;
     z-index: 1000;
 }
 
-.brand-wrapper {
+.guide-cover-branding {
     display: flex;
-    align-items: center;
-    gap: 14px;
+    flex-direction: column;
+    gap: 2px;
 }
 
-.brand-logo-badge {
-    background: var(--brand-green);
+.guide-tagline-badge {
     color: var(--brand-yellow);
     font-family: var(--font-heading);
     font-weight: 700;
-    font-size: 1.05rem;
-    padding: 3px 10px;
-    border-radius: 4px;
-    letter-spacing: 1.2px;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    box-shadow: 0 0 12px rgba(10, 77, 28, 0.7);
-    border: 1px solid rgba(255, 242, 0, 0.3);
 }
 
-.top-bar h1 {
+.guide-cover-title {
     font-family: var(--font-heading);
-    font-size: 1.45rem;
+    font-size: 1.85rem;
     font-weight: 700;
     color: var(--brand-yellow);
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    text-shadow: 0 2px 8px rgba(255, 242, 0, 0.25);
+    line-height: 1.1;
+    margin: 0;
+    text-shadow: 0 3px 12px rgba(255, 242, 0, 0.35);
 }
 
-.top-bar h1 span {
-    color: #ffffff;
+.guide-cover-subheading {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
     font-weight: 600;
+    letter-spacing: 1.5px;
+    color: #ffffff;
+    opacity: 0.85;
 }
 
-#stats-bar {
+.guide-stats-ribbon {
     font-family: var(--font-mono);
     font-size: 0.82rem;
-    color: var(--text-dim);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(17, 23, 19, 0.85);
-    padding: 6px 14px;
+    color: #000000;
+    background: var(--brand-yellow);
+    padding: 6px 16px;
     border-radius: 4px;
-    border: 1px solid var(--border);
-}
-
-.stat {
+    font-weight: 700;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 12px;
+    box-shadow: 0 0 15px var(--brand-yellow-glow);
 }
 
-.stat strong {
-    color: #fff;
+.guide-stats-ribbon .stat strong {
+    color: #000000;
+    font-weight: 800;
+}
+
+.guide-stats-ribbon .stat-sep {
+    color: rgba(0, 0, 0, 0.35);
     font-weight: 700;
 }
 
-.stat-sep {
-    color: var(--border-light);
-}
-
-/* Layout */
-.main-content {
+/* Magazine Spread Layout */
+.guide-magazine-layout {
     display: flex;
     flex: 1;
     overflow: hidden;
     position: relative;
+    background: #000000;
 }
 
-/* Sidebar */
-#sidebar {
-    width: 350px;
-    background: var(--bg-dark);
-    padding: 18px 16px;
-    overflow-y: auto;
-    border-right: 2px solid var(--border);
-    flex-shrink: 0;
+/* Left Editorial Panel (Themed like Yellow Overview Page 2) */
+.guide-editorial-panel {
+    width: 380px;
+    background: #fff200; /* Signature solid yellow page from PDF */
+    color: #000000;
+    padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.6);
+    gap: 14px;
+    overflow-y: auto;
+    flex-shrink: 0;
+    box-shadow: 6px 0 30px rgba(0, 0, 0, 0.7);
     z-index: 100;
+    border-right: 3px solid #000000;
 }
 
-.sidebar-panel {
-    background: var(--bg-panel);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 14px;
-    position: relative;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+.editorial-header {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
-.sidebar-panel::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: var(--brand-yellow);
-    border-radius: 6px 0 0 6px;
-}
-
-.sidebar-panel.danger-accent::before {
-    background: var(--accent);
-}
-
-.sidebar-panel.warning-accent::before {
-    background: var(--tac-orange);
-}
-
-.sidebar-panel.green-accent::before {
-    background: var(--brand-green-bright);
-}
-
-.sidebar-panel h2 {
-    font-family: var(--font-heading);
+.editorial-tag {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #0a4d1c;
     text-transform: uppercase;
-    font-size: 1.05rem;
+}
+
+.editorial-header h2 {
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
     font-weight: 700;
     letter-spacing: 1px;
-    color: var(--brand-yellow);
-    margin-bottom: 12px;
+    color: #0a4d1c; /* Deep jungle green header like OVERVIEW on page 2 */
+    text-transform: uppercase;
+    line-height: 1;
+}
+
+.editorial-divider {
+    height: 3px;
+    background: #0a4d1c;
+    width: 45px;
+    margin-top: 6px;
+}
+
+/* Tab Navigation Buttons */
+.guide-nav-tabs {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    gap: 4px;
+    background: rgba(0, 0, 0, 0.08);
+    padding: 4px;
+    border-radius: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
 }
 
-.sidebar-panel h2::after {
-    content: '///';
-    font-family: var(--font-mono);
-    color: var(--brand-green-bright);
-    font-size: 0.75rem;
-    letter-spacing: 2px;
+.guide-tab-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    padding: 7px 2px;
+    font-family: var(--font-heading);
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #0a4d1c;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
 }
 
-/* Inputs & Form Elements */
+.guide-tab-btn:hover {
+    background: rgba(10, 77, 28, 0.15);
+}
+
+.guide-tab-btn.active {
+    background: #000000;
+    color: var(--brand-yellow);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Tab Content */
+.guide-tab-content {
+    display: none;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.guide-tab-content.active {
+    display: flex;
+}
+
+/* Editorial Cards */
+.editorial-card {
+    background: #000000;
+    color: #ffffff;
+    border-radius: 6px;
+    padding: 14px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+    border: 1px solid #1a241b;
+}
+
+.card-headline {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--brand-yellow);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.card-intro {
+    font-size: 0.74rem;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+/* Form Elements inside Black Cards */
 .filter-group {
     margin-bottom: 12px;
 }
@@ -233,24 +281,34 @@ body {
 
 .filter-group label {
     display: block;
-    font-size: 0.75rem;
-    font-weight: 600;
+    font-size: 0.72rem;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: var(--text-dim);
+    color: var(--brand-yellow);
     margin-bottom: 6px;
+    font-family: var(--font-mono);
+}
+
+.editorial-match-info {
+    background: #111713;
+    border: 1px dashed #344d3a;
+    border-radius: 4px;
+    padding: 10px;
+    margin-top: 12px;
 }
 
 .map-nav-control {
     display: flex;
     align-items: center;
     gap: 6px;
+    margin-bottom: 12px;
 }
 
 .map-nav-btn {
-    background: var(--bg-card);
+    background: #18221b;
     color: var(--brand-yellow);
-    border: 1px solid var(--border-light);
+    border: 1px solid #344d3a;
     border-radius: 4px;
     width: 38px;
     height: 38px;
@@ -630,19 +688,59 @@ input[type="checkbox"], input[type="radio"] {
     text-align: right;
 }
 
-/* Map Container */
-.map-container {
+/* Map Viewport Area */
+.guide-map-viewport {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     position: relative;
-    background: #000;
+    background: #000000;
 }
 
 #map {
     width: 100%;
     height: 100%;
-    background-color: #05070a !important;
+    background-color: #000000 !important;
+}
+
+/* Full-Bleed Yellow Bottom Motto Banner (Exact match to Page 10 of Jamaica Travel Guide) */
+.guide-bottom-motto-banner {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: var(--brand-yellow);
+    color: #000000;
+    z-index: 998;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 24px;
+    border-top: 3px solid #000000;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.6);
+}
+
+.motto-content {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.motto-highlight {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--brand-green); /* Dark green bold text from page 10 */
+    text-transform: uppercase;
+}
+
+.motto-sub {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #000000;
+    letter-spacing: 1px;
 }
 
 /* Map Carousel Top Header Bar (Jamaica Travel Guide Style) */
@@ -655,21 +753,21 @@ input[type="checkbox"], input[type="radio"] {
     display: flex;
     align-items: center;
     gap: 14px;
-    background: rgba(0, 0, 0, 0.88);
+    background: rgba(0, 0, 0, 0.92);
     backdrop-filter: blur(10px);
-    border: 2px solid var(--brand-yellow);
+    border: 3px solid var(--brand-yellow);
     border-radius: 8px;
     padding: 6px 16px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 242, 0, 0.2);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.9), 0 0 20px rgba(255, 242, 0, 0.3);
 }
 
 .carousel-nav-btn {
     background: var(--brand-yellow);
     color: #000000;
-    border: none;
+    border: 2px solid #000000;
     border-radius: 6px;
-    width: 38px;
-    height: 38px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -682,6 +780,7 @@ input[type="checkbox"], input[type="radio"] {
 
 .carousel-nav-btn:hover {
     background: #ffffff;
+    border-color: #000000;
     transform: scale(1.1);
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
 }
@@ -694,7 +793,7 @@ input[type="checkbox"], input[type="radio"] {
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-width: 180px;
+    min-width: 200px;
     user-select: none;
 }
 
@@ -709,54 +808,14 @@ input[type="checkbox"], input[type="radio"] {
 
 .carousel-title {
     font-family: var(--font-heading);
-    font-size: 1.45rem;
+    font-size: 1.55rem;
     font-weight: 700;
     color: var(--brand-yellow);
     letter-spacing: 1.5px;
     text-transform: uppercase;
     line-height: 1.1;
     margin: 0;
-    text-shadow: 0 2px 8px rgba(255, 242, 0, 0.3);
-}
-
-/* Signature Yellow Bottom Banner (Direct from Jamaica Travel Guide) */
-.map-footer-yellow-banner {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 34px;
-    background: var(--brand-yellow);
-    color: #000000;
-    z-index: 998;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
-    border-top: 2px solid #000000;
-    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.4);
-    pointer-events: none;
-}
-
-.banner-badge {
-    background: #000000;
-    color: var(--brand-yellow);
-    font-family: var(--font-heading);
-    font-weight: 700;
-    font-size: 0.85rem;
-    letter-spacing: 1px;
-    padding: 2px 8px;
-    border-radius: 3px;
-    text-transform: uppercase;
-}
-
-.banner-text {
-    font-family: var(--font-heading);
-    font-weight: 700;
-    font-size: 0.95rem;
-    letter-spacing: 1.5px;
-    color: #000000;
-    text-transform: uppercase;
+    text-shadow: 0 2px 8px rgba(255, 242, 0, 0.35);
 }
 
 /* Map Floating HUD Legend & POI Toggle */
@@ -996,18 +1055,28 @@ input[type="checkbox"], input[type="radio"] {
 .loot-color { color: var(--tac-green); }
 
 /* Responsive adjustments */
-@media (max-width: 900px) {
-    .main-content {
+@media (max-width: 960px) {
+    .guide-magazine-layout {
         flex-direction: column;
     }
-    #sidebar {
+    .guide-editorial-panel {
         width: 100%;
-        max-height: 45vh;
+        max-height: 48vh;
         border-right: none;
-        border-bottom: 2px solid var(--border);
+        border-bottom: 3px solid #000000;
+    }
+    .map-carousel-bar {
+        top: 8px;
+        padding: 4px 10px;
     }
     .map-hud-overlay {
-        top: 10px;
+        top: 60px;
         right: 10px;
+    }
+    .guide-bottom-motto-banner {
+        flex-direction: column;
+        gap: 4px;
+        align-items: flex-start;
+        padding: 6px 14px;
     }
 }
