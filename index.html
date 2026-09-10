@@ -28,13 +28,17 @@
             <section class="sidebar-panel">
                 <h2>Telemetry Filters</h2>
                 <div class="filter-group">
-                    <label for="map-filter">Tactical Sector / Map</label>
-                    <select id="map-filter">
-                        <option value="">All Sectors (Overview)</option>
-                        <option value="AmbroseValley">Ambrose Valley</option>
-                        <option value="GrandRift">Grand Rift</option>
-                        <option value="Lockdown">Lockdown</option>
-                    </select>
+                    <label for="map-filter">Tactical Map Navigation</label>
+                    <div class="map-nav-control">
+                        <button type="button" id="map-prev-btn" class="map-nav-btn" title="Previous Map">◀</button>
+                        <select id="map-filter">
+                            <option value="">All Sectors (Overview)</option>
+                            <option value="AmbroseValley">Ambrose Valley</option>
+                            <option value="GrandRift">Grand Rift</option>
+                            <option value="Lockdown">Lockdown</option>
+                        </select>
+                        <button type="button" id="map-next-btn" class="map-nav-btn" title="Next Map">▶</button>
+                    </div>
                 </div>
                 <div class="filter-group">
                     <label for="date-filter">Deployment Date</label>
@@ -124,6 +128,16 @@
 
         <!-- Main Map Area -->
         <main class="map-container">
+            <!-- Map Carousel Top Header Bar with Navigation Arrows (Jamaica Travel Guide Style) -->
+            <div class="map-carousel-bar">
+                <button type="button" id="viewport-map-prev-btn" class="carousel-nav-btn" title="Previous Map">❮</button>
+                <div class="carousel-map-title-box">
+                    <span class="carousel-subtitle">TACTICAL SECTOR GUIDE</span>
+                    <h2 id="carousel-map-name" class="carousel-title">AMBROSE VALLEY</h2>
+                </div>
+                <button type="button" id="viewport-map-next-btn" class="carousel-nav-btn" title="Next Map">❯</button>
+            </div>
+
             <!-- Floating Map HUD Legend & Quick View Controls -->
             <div class="map-hud-overlay">
                 <div class="hud-panel">
@@ -140,6 +154,12 @@
                         <div class="legend-row"><span class="legend-dot" style="background:#9b59b6;"></span> Storm Barrier Casualty</div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Bottom Yellow Accent Bar (Jamaica Guide Signature) -->
+            <div class="map-footer-yellow-banner">
+                <span class="banner-badge">LILA BLACK</span>
+                <span class="banner-text">"TACTICAL RECON & LEVEL DESIGN TELEMETRY"</span>
             </div>
 
             <div id="map"></div>

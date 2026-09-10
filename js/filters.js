@@ -31,12 +31,44 @@ const Filters = {
             this.els.dateFilter.appendChild(opt);
         });
 
+        // Map list for arrow carousel navigation
+        this.maps = ['AmbroseValley', 'GrandRift', 'Lockdown'];
+
         // Attach event listeners
         this.els.mapFilter.addEventListener('change', () => this.onFilterChange());
         this.els.dateFilter.addEventListener('change', () => this.onFilterChange());
         this.els.matchFilter.addEventListener('change', () => this.onMatchSelect());
 
+        // Arrow navigation buttons (sidebar + on-map viewport carousel)
+        const bindArrow = (id, delta) => {
+            const btn = document.getElementById(id);
+            if (btn) {
+                btn.addEventListener('click', () => this.cycleMap(delta));
+            }
+        };
+        bindArrow('map-prev-btn', -1);
+        bindArrow('map-next-btn', 1);
+        bindArrow('viewport-map-prev-btn', -1);
+        bindArrow('viewport-map-next-btn', 1);
+
         // Initial filter
+        this.onFilterChange();
+    },
+
+    /**
+     * Cycle between maps via arrow buttons
+     */
+    cycleMap(delta) {
+        let currentMap = this.els.mapFilter.value;
+        let currentIndex = this.maps.indexOf(currentMap);
+        if (currentIndex === -1) {
+            currentIndex = delta > 0 ? -1 : 0;
+        }
+
+        let nextIndex = (currentIndex + delta + this.maps.length) % this.maps.length;
+        const nextMap = this.maps[nextIndex];
+
+        this.els.mapFilter.value = nextMap;
         this.onFilterChange();
     },
 
@@ -74,6 +106,17 @@ const Filters = {
             GameMap.loadMap(mapVal);
         }
 
+        // Update on-map carousel header title
+        const carouselMapNameEl = document.getElementById('carousel-map-name');
+        if (carouselMapNameEl) {
+            const formatMapName = {
+                'AmbroseValley': 'AMBROSE VALLEY',
+                'GrandRift': 'GRAND RIFT',
+                'Lockdown': 'LOCKDOWN'
+            };
+            carouselMapNameEl.textContent = formatMapName[mapVal] || (mapVal ? mapVal.toUpperCase() : 'ALL SECTORS OVERVIEW');
+        }
+
         // Auto-select first match if available so player route map renders immediately
         if (this.filteredMatches.length > 0) {
             const firstMatch = this.filteredMatches[0];
@@ -106,6 +149,15 @@ const Filters = {
         // Load the map for this match
         if (this.selectedMatch) {
             GameMap.loadMap(this.selectedMatch.map);
+            const carouselMapNameEl = document.getElementById('carousel-map-name');
+            if (carouselMapNameEl) {
+                const formatMapName = {
+                    'AmbroseValley': 'AMBROSE VALLEY',
+                    'GrandRift': 'GRAND RIFT',
+                    'Lockdown': 'LOCKDOWN'
+                };
+                carouselMapNameEl.textContent = formatMapName[this.selectedMatch.map] || this.selectedMatch.map.toUpperCase();
+            }
         }
 
         // Notify app
