@@ -56,6 +56,23 @@ const App = {
             });
         }
 
+        // Tab Switching Logic for Jamaica Guide Editorial Panel
+        const tabBtns = document.querySelectorAll('.guide-tab-btn');
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetTabId = btn.getAttribute('data-tab');
+                
+                tabBtns.forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.guide-tab-content').forEach(c => c.classList.remove('active'));
+
+                btn.classList.add('active');
+                const targetContent = document.getElementById(targetTabId);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                }
+            });
+        });
+
         // Set default heatmap map
         Heatmap.setMap('AmbroseValley');
 
@@ -207,6 +224,14 @@ const App = {
         this.focusedPlayerId = playerId;
         this.updatePlayerRoster();
         this.updateJourneyStages();
+
+        // If a specific player is focused, automatically open the JOURNEYS tab to show their progression
+        if (playerId) {
+            const stagesTabBtn = document.querySelector('.guide-tab-btn[data-tab="tab-stages"]');
+            if (stagesTabBtn) {
+                stagesTabBtn.click();
+            }
+        }
 
         const timeLimit = Timeline.playing ? Timeline.currentTime :
                          (Timeline.currentTime > 0 ? Timeline.currentTime : null);
