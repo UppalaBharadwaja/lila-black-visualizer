@@ -191,20 +191,8 @@ html, body {
 .user-avatar-pill {
     display: flex;
     align-items: center;
-    gap: 9px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    padding: 3px 12px 3px 4px;
-    border-radius: 24px;
+    gap: 6px;
     cursor: pointer;
-    transition: all 0.2s ease;
-    user-select: none;
-}
-
-.user-avatar-pill:hover {
-    background: rgba(255, 255, 255, 0.09);
-    border-color: rgba(29, 114, 254, 0.6);
-    box-shadow: 0 0 12px rgba(29, 114, 254, 0.3);
 }
 
 .user-profile-img {
@@ -212,17 +200,8 @@ html, body {
     height: 32px;
     border-radius: 50%;
     object-fit: cover;
-    object-position: center top;
-    border: 1.5px solid var(--vibrant-blue, #1d72fe);
-    box-shadow: 0 0 8px rgba(29, 114, 254, 0.4);
-    display: block;
-}
-
-.user-name-tag {
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: #e2e8f0;
-    letter-spacing: 0.2px;
+    border: 1.5px solid #334155;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 /* =========================================================
