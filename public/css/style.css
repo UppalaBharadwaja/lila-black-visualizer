@@ -768,35 +768,7 @@ body.is-resizing-sidebar {
     height: 0;
     pointer-events: none;
 }
-
-/* Overview heatmap bar — sits below the map viewport */
-.overview-heatmap-bar {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 14px;
-    background: var(--card-inner);
-    border-top: 1px solid var(--card-border);
-    border-radius: 0 0 10px 10px;
-    flex-wrap: wrap;
-}
-
-.overview-heatmap-label {
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: var(--text-secondary);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    white-space: nowrap;
-}
-
-.heatmap-count-label {
-    font-size: 0.68rem;
-    color: var(--cyan-text, #00d2ff);
-    font-family: var(--font-mono, monospace);
-    margin-left: auto;
-}
-
+/* Heatmap clear button */
 .heatmap-clear-btn {
     background: transparent;
     border: 1px solid var(--card-border);

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * heatmap.js - Heatmap overlay management for the Player Journey Visualization Tool
  *
  * Heatmaps are DATE-level aggregations from heatmaps.json.
@@ -97,15 +97,9 @@ const Heatmap = {
         if (countBadge) {
             if (points.length > 0) {
                 const dateLabel = this.currentDate ? " - " + this.currentDate : " - All Dates";
-                const text = points.length.toLocaleString() + " pts - " + this.currentMode + dateLabel;
-                countBadge.textContent = text;
-                // Mirror to overview bar badge
-                const overviewBadge = document.getElementById("heatmap-points-count-overview");
-                if (overviewBadge) overviewBadge.textContent = text;
+                countBadge.textContent = points.length.toLocaleString() + " pts - " + this.currentMode + dateLabel;
             } else {
                 countBadge.textContent = "No data for selection";
-                const overviewBadge = document.getElementById("heatmap-points-count-overview");
-                if (overviewBadge) overviewBadge.textContent = "No data for selection";
             }
         }
 
