@@ -1,6 +1,6 @@
 # LILA BLACK — Player Journey Visualization Tool
 
-A browser-based visualization tool that lets Level Designers explore player behavior across LILA BLACK's 3 maps, built from 5 days of production telemetry data.
+A browser-based visualization tool that lets Level Designers explore player behavior across LILA BLACK's 3 maps.
 
 ## 🔗 Live Demo
 
