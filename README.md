@@ -4,7 +4,9 @@ A browser-based visualization tool that lets Level Designers explore player beha
 
 ## 🔗 Live Demo
 
-**Deployed URL**: *(to be added after deployment)*
+- **Live Deployed App (Netlify)**: [https://lila-black-visualizer.netlify.app](https://lila-black-visualizer.netlify.app)
+- **GitHub Repository**: [https://github.com/UppalaBharadwaja/lila-black-visualizer](https://github.com/UppalaBharadwaja/lila-black-visualizer)
+- **GitHub Pages Mirror**: [https://uppalabharadwaja.github.io/lila-black-visualizer/](https://uppalabharadwaja.github.io/lila-black-visualizer/)
 
 ## Features
 
