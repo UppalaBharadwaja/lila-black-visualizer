@@ -18,6 +18,50 @@ A browser-based visualization tool that lets Level Designers explore player beha
 - **Heatmap Overlays** — Toggle between kill zones, death zones, traffic density, and loot spot overlays
 - **Match Stats** — View match details including player count, duration, kill/death/loot counts
 
+## 📖 Feature Walkthrough
+
+### 1. Overview & High-Level Telemetry
+- **Top KPI Cards**: View aggregate metrics across the selected telemetry slice: Total Matches, Average Players per Match, Combat Kills, and Storm Deaths.
+- **Tactical Minimap View**: High-resolution 1024×1024 map canvas with coordinate grids, responsive zoom controls (+ / —), and quick fit (⛶).
+- **Map Selection**: Quickly switch between Ambrose Valley, Grand Rift, and Lockdown with instant coordinate and minimap recalibration.
+
+### 2. Match Explorer & Player Journeys
+- **Match Selector**: Choose from 796 matches with live human/bot composition, duration, and kill count metadata.
+- **Operative Paths**: Visual polylines showing exact player trajectories. Human operatives are highlighted in cyan (`#00d2ff`) and bots in stealth gray (`#888888`).
+- **Event Markers**:
+  - ⚔ **Kills / Bot Kills**: Red combat crosshairs showing where engagements occurred.
+  - 💀 **Deaths / Bot Deaths**: Orange skull markers marking elimination positions.
+  - 📦 **Loot Pickups**: Green loot boxes highlighting item collection spots.
+  - ⚡ **Storm Deaths**: Purple storm markers indicating players caught outside safe zones.
+
+### 3. Timeline Playback & Match Progression
+- **Play / Pause (▶ / ⏸)**: Watch the match unfold chronologically in simulated time.
+- **Speed Multipliers**: Seamlessly toggle between 1x, 2x, 4x, and 8x playback speeds.
+- **Interactive Scrubber**: Drag across match duration with live millisecond tooltips and dynamic trajectory growth.
+
+### 4. Operative Roster & Milestone Inspection
+- **Operative Cards**: View each player's status (Alive vs. Eliminated), human/bot badge, and total kills.
+- **Path Isolation**: Click any operative card to highlight their specific path and dim out others.
+- **Milestone Navigation**: Click chronological combat milestones to pan directly to key firefights.
+
+### 5. Heatmap Density Overlays
+- **Toggle Modes**: Switch between **Kill Zones**, **Death Zones**, **Traffic Density**, and **Loot Spots**.
+- **Dynamic Filtering**: Heatmaps react to both the active map and date filter, showing day-level hotspot shifts.
+- **Density Legend**: Visual gradient from low density (cyan/blue) to high density (yellow/red) with live point counter badge and a quick **✕ Clear** button.
+
+## ✅ Submission Checklist Verification
+
+- [x] **Tool is live at the hosted URL**: Accessible at [https://lila-black-visualizer.netlify.app](https://lila-black-visualizer.netlify.app)
+- [x] **Player paths render correctly on the minimap**: Coordinate transformation formula applied with 0 out-of-bounds errors.
+- [x] **Can tell humans apart from bots visually**: Cyan vs. Gray paths, distinct roster badges, and filter toggles.
+- [x] **Kill, death, loot, and storm events are marked**: Distinct event icons with tooltips.
+- [x] **Filtering by map/date/match works**: Multi-level dropdowns and pill filters.
+- [x] **Timeline or playback shows match progression**: Scrubber, play/pause, and 1x–8x playback speeds.
+- [x] **Heatmaps show kill zones, death zones, and traffic**: Interactive Leaflet.heat overlays with density gradient.
+- [x] **Architecture doc covers coordinate mapping approach**: Detailed in [`ARCHITECTURE.md`](ARCHITECTURE.md).
+- [x] **Three insights with supporting evidence**: Documented with metrics in [`INSIGHTS.md`](INSIGHTS.md).
+- [x] **Walkthrough covers all major features**: Complete walkthrough included above.
+
 ## Tech Stack
 
 | Component | Technology |
