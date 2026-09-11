@@ -42,6 +42,7 @@ const GameMap = {
         window.addEventListener('resize', () => {
             if (this.map) {
                 this.map.invalidateSize();
+                this.zoomToFit(false);
             }
         });
 
@@ -82,27 +83,20 @@ const GameMap = {
      * Seamlessly fit the map into the right panel container like Google Maps
      * Calculates container aspect ratio and fills the entire available area
      */
+    /**
+     * Seamlessly fit the entire 1024x1024 map into the right panel container
+     * Ensures all parts of the map are fully visible without zooming in or cropping
+     */
     zoomToFit(animate = true) {
         if (!this.map) return;
         this.map.invalidateSize();
 
-        const container = this.map.getContainer();
-        const width = container.clientWidth || 800;
-        const height = container.clientHeight || 600;
-
-        // Minimap is 1024x1024. In CRS.Simple at zoom 0, 1024 units = 1024 px.
-        // To fit the full map into the right panel seamlessly:
-        const zoomX = Math.log2(width / Utils.IMAGE_SIZE);
-        const zoomY = Math.log2(height / Utils.IMAGE_SIZE);
-        // Using Math.max fills the container completely (edge-to-edge full bleed like Google Maps)
-        // With Math.min, padding ensures it's fully framed without huge letterboxing
-        const fitZoom = Math.max(zoomX, zoomY, -0.8);
-
-        if (animate) {
-            this.map.flyTo([512, 512], fitZoom, { duration: 0.65 });
-        } else {
-            this.map.setView([512, 512], fitZoom);
-        }
+        const fullBounds = [[0, 0], [Utils.IMAGE_SIZE, Utils.IMAGE_SIZE]];
+        this.map.fitBounds(fullBounds, {
+            padding: [0, 0],
+            animate: animate,
+            duration: 0.65
+        });
     },
 
     /**
@@ -219,7 +213,7 @@ const GameMap = {
             return 0;
         });
 
-        players.forEach(player => {
+        players.forEach((player, pIdx) => {
             const isHuman = player.human;
             const isFocused = focusedPlayerId === player.id;
 
@@ -242,18 +236,19 @@ const GameMap = {
             // Image coordinates have y=0 at top, so Leaflet lat = 1024 - py, Leaflet lng = px.
             const latLngs = pathPoints.map(p => [1024 - p[1], p[0]]);
 
-            // Style: Focused player gets bright gold, humans get cyber cyan, bots get subtle slate
-            let color = isHuman ? Utils.PLAYER_COLORS.human : Utils.PLAYER_COLORS.bot;
-            let weight = isHuman ? 3.5 : 1.5;
-            let opacity = isHuman ? 0.95 : 0.45;
+            // Style: Unique vibrant neon color for each human player, subtle slate for bots
+            let baseColor = Utils.getPlayerColor(player, pIdx);
+            let color = baseColor;
+            let weight = isHuman ? 3.5 : 1.8;
+            let opacity = isHuman ? 0.95 : 0.55;
 
             if (focusedPlayerId) {
                 if (isFocused) {
-                    color = '#f5ee38'; // High-visibility golden yellow
-                    weight = 5;
+                    color = '#00f2fe'; // Super high-visibility glowing cyan/gold
+                    weight = 5.5;
                     opacity = 1.0;
                 } else {
-                    opacity = isHuman ? 0.4 : 0.15;
+                    opacity = isHuman ? 0.35 : 0.12;
                     weight = isHuman ? 2 : 1;
                 }
             }
@@ -301,15 +296,29 @@ const GameMap = {
                 this.pathLayers.addLayer(startMarker);
             }
 
-            // Current player location marker (head of path) during playback
+            // Current player location marker (head of path) during playback with pulse animation
             if (timeLimit !== null && latLngs.length > 0) {
                 const currentPos = latLngs[latLngs.length - 1];
+
+                // Outer pulsing glow aura
+                const pulseRing = L.circleMarker(currentPos, {
+                    radius: isHuman ? 11 : 7,
+                    color: color,
+                    fillColor: color,
+                    fillOpacity: 0.25,
+                    weight: 1.5,
+                    className: 'player-head-pulse'
+                });
+                this.pathLayers.addLayer(pulseRing);
+
+                // Central high-contrast position head
                 const headMarker = L.circleMarker(currentPos, {
-                    radius: isHuman ? 6 : 4,
+                    radius: isHuman ? 5.5 : 3.5,
                     color: '#ffffff',
                     fillColor: color,
                     fillOpacity: 1,
-                    weight: 2.5,
+                    weight: 2,
+                    className: 'player-head-point'
                 });
                 this.pathLayers.addLayer(headMarker);
             }

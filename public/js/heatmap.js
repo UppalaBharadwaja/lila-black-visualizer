@@ -1,116 +1,156 @@
-/**
- * heatmap.js — Heatmap overlay management for the Player Journey Visualization Tool
+﻿/**
+ * heatmap.js - Heatmap overlay management for the Player Journey Visualization Tool
+ *
+ * Heatmaps are DATE-level aggregations from heatmaps.json.
+ * They show kill zones / death zones / traffic / loot spots for ALL matches
+ * on the selected map + date combination.
+ *
+ * Changing the date filter OR the map filter updates the overlay immediately.
  */
 
 const Heatmap = {
     heatLayer: null,
-    heatmapData: null,
-    currentMode: 'none',
-    currentMap: null,
+    heatmapData: null,        // Loaded from data/heatmaps.json
+    currentMode: "none",      // "kills" | "deaths" | "traffic" | "loot" | "none"
+    currentMap: "AmbroseValley",
+    currentDate: null,        // e.g. "2026-02-10"  or null = all dates
+    currentPlayerFilter: "both", // "both" | "humans" | "bots"
 
-    /**
-     * Initialize heatmap controls
-     */
+    /** Initialize heatmap controls */
     init() {
-        // Load heatmap data
         this.loadData();
-
-        // Attach radio button listeners
-        document.querySelectorAll('input[name="heatmap-mode"]').forEach(radio => {
-            radio.addEventListener('change', (e) => {
+        // Wire sidebar radio buttons
+        document.querySelectorAll("input[name=\"heatmap-mode\"]").forEach(radio => {
+            radio.addEventListener("change", (e) => {
                 this.setMode(e.target.value);
             });
         });
     },
 
-    /**
-     * Load pre-computed heatmap data
-     */
+    /** Load pre-computed heatmap data from heatmaps.json */
     async loadData() {
-        this.heatmapData = await Utils.fetchJSON('data/heatmaps.json');
+        this.heatmapData = await Utils.fetchJSON("data/heatmaps.json");
         if (this.heatmapData) {
-            console.log('Heatmap data loaded');
+            console.log("Heatmap data loaded");
+            if (this.currentMode !== "none") this.render();
         }
     },
 
-    /**
-     * Set the current heatmap mode
-     */
+    // Public setters - each re-renders when a mode is active
+
     setMode(mode) {
-        this.currentMode = mode;
+        this.currentMode = mode || "none";
         this.render();
     },
 
-    /**
-     * Update the map being displayed
-     */
+    /** Switch map and re-render. Called by filters.js and app.js. */
     setMap(mapId) {
+        if (!mapId) return;
         this.currentMap = mapId;
-        this.render();
+        if (this.currentMode !== "none") this.render();
+    },
+
+    /** Switch date filter and re-render. Pass null for all dates. */
+    setDate(date) {
+        this.currentDate = date || null;
+        if (this.currentMode !== "none") this.render();
+    },
+
+    /** Switch player-type filter and re-render. */
+    setPlayerFilter(filter) {
+        this.currentPlayerFilter = filter || "both";
+        if (this.currentMode !== "none") this.render();
     },
 
     /**
-     * Render the heatmap overlay
+     * Return filtered points from heatmaps.json.
+     * Raw point format: [py, px, is_human (1|0), date_string]
      */
-    render() {
-        // Remove existing heat layer
-        if (this.heatLayer) {
-            GameMap.map.removeLayer(this.heatLayer);
-            this.heatLayer = null;
-        }
+    getFilteredPoints() {
+        if (this.currentMode === "none" || !this.heatmapData || !this.currentMap) return [];
 
-        if (this.currentMode === 'none' || !this.heatmapData || !this.currentMap) {
+        const mapData = this.heatmapData[this.currentMap];
+        if (!mapData) return [];
+
+        const rawPoints = mapData[this.currentMode] || [];
+
+        return rawPoints.filter(p => {
+            if (this.currentDate && p[3] !== this.currentDate) return false;
+            if (this.currentPlayerFilter === "humans" && p[2] !== 1) return false;
+            if (this.currentPlayerFilter === "bots"   && p[2] !== 0) return false;
+            return true;
+        });
+    },
+
+    /** Render the heatmap overlay on the Leaflet map. */
+    render() {
+        this.clear();
+
+        if (this.currentMode === "none" || !this.heatmapData || !this.currentMap || !GameMap.map) {
             return;
         }
 
-        const mapData = this.heatmapData[this.currentMap];
-        if (!mapData) return;
+        const points = this.getFilteredPoints();
 
-        let points = [];
-        let config = {};
-
-        switch (this.currentMode) {
-            case 'kills':
-                points = mapData.kills || [];
-                config = { radius: 25, blur: 20, maxZoom: 5, max: 1.0,
-                    gradient: { 0.4: '#440154', 0.6: '#b12a90', 0.8: '#e16462', 1.0: '#fca636' }
-                };
-                break;
-            case 'deaths':
-                points = mapData.deaths || [];
-                config = { radius: 25, blur: 20, maxZoom: 5, max: 1.0,
-                    gradient: { 0.4: '#0d0887', 0.6: '#6a00a8', 0.8: '#b12a90', 1.0: '#fca636' }
-                };
-                break;
-            case 'traffic':
-                points = mapData.traffic || [];
-                config = { radius: 15, blur: 15, maxZoom: 5, max: 0.8,
-                    gradient: { 0.2: '#000080', 0.4: '#006400', 0.6: '#ffff00', 0.8: '#ff8c00', 1.0: '#ff0000' }
-                };
-                break;
-            case 'loot':
-                points = mapData.loot || [];
-                config = { radius: 20, blur: 18, maxZoom: 5, max: 1.0,
-                    gradient: { 0.3: '#004d00', 0.5: '#00b300', 0.7: '#66ff66', 1.0: '#ffffff' }
-                };
-                break;
+        // Update count badge
+        const countBadge = document.getElementById("heatmap-points-count");
+        if (countBadge) {
+            if (points.length > 0) {
+                const dateLabel = this.currentDate ? " - " + this.currentDate : " - All Dates";
+                const text = points.length.toLocaleString() + " pts - " + this.currentMode + dateLabel;
+                countBadge.textContent = text;
+                // Mirror to overview bar badge
+                const overviewBadge = document.getElementById("heatmap-points-count-overview");
+                if (overviewBadge) overviewBadge.textContent = text;
+            } else {
+                countBadge.textContent = "No data for selection";
+                const overviewBadge = document.getElementById("heatmap-points-count-overview");
+                if (overviewBadge) overviewBadge.textContent = "No data for selection";
+            }
         }
 
         if (points.length === 0) return;
 
-        // Convert [py, px, intensity] to Leaflet CRS.Simple [1024 - py, px, intensity]
-        const leafletPoints = points.map(p => [1024 - p[0], p[1], p[2]]);
+        const configs = {
+            kills: {
+                radius: 18, blur: 15, maxZoom: 3, max: 1.0, minOpacity: 0.25,
+                gradient: { 0.2: "#0284c7", 0.4: "#06b6d4", 0.6: "#10b981", 0.8: "#facc15", 1.0: "#ef4444" }
+            },
+            deaths: {
+                radius: 18, blur: 15, maxZoom: 3, max: 1.0, minOpacity: 0.25,
+                gradient: { 0.2: "#6366f1", 0.4: "#a855f7", 0.6: "#f97316", 0.85: "#ef4444", 1.0: "#ff0055" }
+            },
+            traffic: {
+                radius: 12, blur: 10, maxZoom: 3, max: 1.0, minOpacity: 0.2,
+                gradient: { 0.2: "#1e3a8a", 0.4: "#0284c7", 0.65: "#06b6d4", 0.85: "#38bdf8", 1.0: "#ffffff" }
+            },
+            loot: {
+                radius: 14, blur: 12, maxZoom: 3, max: 1.0, minOpacity: 0.25,
+                gradient: { 0.2: "#064e3b", 0.45: "#059669", 0.7: "#10b981", 0.85: "#34d399", 1.0: "#fef08a" }
+            },
+        };
+
+        const config = configs[this.currentMode];
+        if (!config) return;
+
+        // Raw points: [py, px, is_human, date]
+        // Leaflet CRS.Simple: [lat, lng] = [1024 - py, px]
+        const intensity = this.currentMode === "traffic" ? 0.35 : 0.5;
+        const leafletPoints = points.map(p => [1024 - p[0], p[1], intensity]);
 
         this.heatLayer = L.heatLayer(leafletPoints, config).addTo(GameMap.map);
     },
 
-    /**
-     * Clear heatmap overlay
-     */
+    /** Remove the heatmap layer from the map. */
     clear() {
-        if (this.heatLayer) {
+        if (this.heatLayer && GameMap.map) {
             GameMap.map.removeLayer(this.heatLayer);
             this.heatLayer = null;
         }
+        const countBadge = document.getElementById("heatmap-points-count");
+        if (countBadge && this.currentMode === "none") {
+            countBadge.textContent = "None";
+        }
     },
 };
+
