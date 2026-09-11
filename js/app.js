@@ -99,18 +99,18 @@ const App = {
             });
         });
 
-        // Clear / deactivate button on Overview bar
-        const overviewClearBtn = document.getElementById('btn-overview-heatmap-clear');
-        if (overviewClearBtn) {
-            overviewClearBtn.addEventListener('click', () => {
+        // Clear / deactivate button on heatmap bar
+        const clearBtns = document.querySelectorAll('#btn-heatmap-clear, #btn-overview-heatmap-clear');
+        clearBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
                 // Uncheck all radios
                 document.querySelectorAll('input[name="heatmap-mode"]').forEach(r => r.checked = false);
                 syncAllPills(null);
                 Heatmap.setMode('none');
-                const overviewBadge = document.getElementById('heatmap-points-count-overview');
-                if (overviewBadge) overviewBadge.textContent = '';
+                const mainBadge = document.getElementById('heatmap-points-count');
+                if (mainBadge) mainBadge.textContent = 'None';
             });
-        }
+        });
 
         // Set default heatmap map
         Heatmap.setMap('AmbroseValley');
@@ -146,11 +146,11 @@ const App = {
             Heatmap.setMode('none');
             document.querySelectorAll('.heatmap-filter-pill').forEach(p => p.classList.remove('active'));
         } else {
-            // Show Overview Layout (default)
+            // Show Overview / Heatmaps Layout
             matchesViews.forEach(el => el.style.display = 'none');
             overviewViews.forEach(el => {
                 if (el.classList.contains('bottom-heatmap-density-bar')) {
-                    el.style.display = (tab === 'tab-heatmaps') ? 'flex' : 'none';
+                    el.style.display = 'flex'; // Single bottom bar visible in both Overview and Heatmaps!
                 } else if (el.classList.contains('map-and-progression-split') || 
                     el.classList.contains('app-sidebar-filters') ||
                     el.classList.contains('sidebar-resizer')) {

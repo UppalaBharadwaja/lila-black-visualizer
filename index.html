@@ -245,35 +245,10 @@
 
                             <div id="map"></div>
                         </div>
-
-                        <!-- Heatmap pill bar for Overview tab -->
-                        <div class="overview-heatmap-bar">
-                            <span class="overview-heatmap-label">Heatmap:</span>
-                            <div class="heatmap-pills-group">
-                                <label class="heatmap-filter-pill">
-                                    <input type="radio" name="heatmap-mode" value="kills">
-                                    <span>Kill Zones</span>
-                                </label>
-                                <label class="heatmap-filter-pill">
-                                    <input type="radio" name="heatmap-mode" value="deaths">
-                                    <span>Death Zones</span>
-                                </label>
-                                <label class="heatmap-filter-pill">
-                                    <input type="radio" name="heatmap-mode" value="traffic">
-                                    <span>Traffic</span>
-                                </label>
-                                <label class="heatmap-filter-pill">
-                                    <input type="radio" name="heatmap-mode" value="loot">
-                                    <span>Loot Spots</span>
-                                </label>
-                                <button type="button" class="heatmap-clear-btn" id="btn-overview-heatmap-clear">✕ Clear</button>
-                            </div>
-                            <span class="heatmap-count-label" id="heatmap-points-count-overview"></span>
-                        </div>
                     </div>
                 </div>
 
-                <!-- Bottom Heatmap Control & Density Gradient Bar (Heatmaps View Only) -->
+                <!-- Bottom Heatmap Control & Density Gradient Bar (Single Unified Heatmap Bar) -->
                 <div class="bottom-heatmap-density-bar view-overview-only">
                     <div class="heatmap-pills-group">
                         <label class="heatmap-filter-pill">
@@ -292,10 +267,11 @@
                             <input type="radio" name="heatmap-mode" value="loot">
                             <span>Loot Spots</span>
                         </label>
+                        <button type="button" class="heatmap-clear-btn" id="btn-heatmap-clear" title="Turn off heatmap overlay">✕ Clear</button>
                     </div>
 
                     <div class="density-gradient-wrapper">
-                        <span class="badge-pill" id="heatmap-points-count" style="color:var(--cyan-text); font-family:var(--font-mono); font-weight:700;">Active Heatmap</span>
+                        <span class="badge-pill" id="heatmap-points-count" style="color:var(--cyan-text); font-family:var(--font-mono); font-weight:700;">None</span>
                         <span class="density-text">Low Density</span>
                         <div class="density-color-gradient-track"></div>
                         <span class="density-text">High Density</span>
