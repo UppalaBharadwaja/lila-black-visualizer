@@ -23,14 +23,48 @@ const Timeline = {
         this.els.speedBtns = document.querySelectorAll('.speed-btn');
 
         // Play/Pause button
-        this.els.playBtn.addEventListener('click', () => this.togglePlay());
+        if (this.els.playBtn) {
+            this.els.playBtn.addEventListener('click', () => this.togglePlay());
+        }
 
-        // Slider scrubbing
-        this.els.slider.addEventListener('input', () => {
-            this.currentTime = (this.els.slider.value / 1000) * this.maxTime;
-            this.updateDisplay();
-            this.onTimeChange();
-        });
+        // Backward / Forward transport buttons
+        const seekStartBtn = document.getElementById('btn-seek-start');
+        if (seekStartBtn) {
+            seekStartBtn.addEventListener('click', () => {
+                this.seekTo(0);
+            });
+        }
+
+        const seekEndBtn = document.getElementById('btn-seek-end');
+        if (seekEndBtn) {
+            seekEndBtn.addEventListener('click', () => {
+                this.seekTo(this.maxTime);
+            });
+        }
+
+        // Zoom in / out buttons on map header
+        const zoomInBtn = document.getElementById('btn-zoom-in');
+        if (zoomInBtn) {
+            zoomInBtn.addEventListener('click', () => {
+                if (GameMap.map) GameMap.map.zoomIn();
+            });
+        }
+
+        const zoomOutBtn = document.getElementById('btn-zoom-out');
+        if (zoomOutBtn) {
+            zoomOutBtn.addEventListener('click', () => {
+                if (GameMap.map) GameMap.map.zoomOut();
+            });
+        }
+
+        // Hidden slider scrubbing for compatibility
+        if (this.els.slider) {
+            this.els.slider.addEventListener('input', () => {
+                this.currentTime = (this.els.slider.value / 1000) * this.maxTime;
+                this.updateDisplay();
+                this.onTimeChange();
+            });
+        }
 
         // Speed buttons
         this.els.speedBtns.forEach(btn => {
@@ -49,12 +83,29 @@ const Timeline = {
     /**
      * Set up timeline for a match
      */
-    setMatch(durationMs) {
+    setMatch(durationMs, matchData = null) {
         this.stop();
         this.maxTime = durationMs;
         this.currentTime = 0;
-        this.els.slider.value = 0;
+        if (this.els.slider) this.els.slider.value = 0;
         this.updateDisplay();
+
+        const hTimeEnd = document.getElementById('h-time-end');
+        if (hTimeEnd) {
+            hTimeEnd.textContent = Utils.formatTime(durationMs);
+        }
+    },
+
+    /**
+     * Seek to a specific timestamp
+     */
+    seekTo(timeMs) {
+        this.currentTime = Math.max(0, Math.min(this.maxTime, timeMs));
+        if (this.els.slider && this.maxTime > 0) {
+            this.els.slider.value = Math.round((this.currentTime / this.maxTime) * 1000);
+        }
+        this.updateDisplay();
+        this.onTimeChange();
     },
 
     /**
@@ -80,8 +131,10 @@ const Timeline = {
         }
 
         this.playing = true;
-        this.els.playBtn.textContent = '⏸';
-        this.els.playBtn.classList.add('playing');
+        if (this.els.playBtn) {
+            this.els.playBtn.textContent = '⏸';
+            this.els.playBtn.classList.add('playing');
+        }
         this.lastFrameTime = performance.now();
         this.animate();
     },
@@ -91,8 +144,10 @@ const Timeline = {
      */
     pause() {
         this.playing = false;
-        this.els.playBtn.textContent = '▶';
-        this.els.playBtn.classList.remove('playing');
+        if (this.els.playBtn) {
+            this.els.playBtn.textContent = '▶';
+            this.els.playBtn.classList.remove('playing');
+        }
         if (this.animationFrame) {
             cancelAnimationFrame(this.animationFrame);
             this.animationFrame = null;
@@ -105,7 +160,7 @@ const Timeline = {
     stop() {
         this.pause();
         this.currentTime = 0;
-        this.els.slider.value = 0;
+        if (this.els.slider) this.els.slider.value = 0;
         this.updateDisplay();
     },
 
@@ -120,7 +175,6 @@ const Timeline = {
         this.lastFrameTime = now;
 
         // Advance time (speed multiplier applied)
-        // Scale: 1x speed means match plays in roughly 10 seconds
         const playbackScale = this.maxTime / 10000; // 10 second full playback at 1x
         this.currentTime += delta * this.speed * playbackScale;
 
@@ -130,8 +184,10 @@ const Timeline = {
         }
 
         // Update slider position
-        const sliderVal = this.maxTime > 0 ? (this.currentTime / this.maxTime) * 1000 : 0;
-        this.els.slider.value = Math.round(sliderVal);
+        if (this.els.slider && this.maxTime > 0) {
+            const sliderVal = (this.currentTime / this.maxTime) * 1000;
+            this.els.slider.value = Math.round(sliderVal);
+        }
 
         this.updateDisplay();
         this.onTimeChange();
@@ -142,12 +198,35 @@ const Timeline = {
     },
 
     /**
-     * Update time display text
+     * Update time display text and scrubber pill position
      */
     updateDisplay() {
         const current = Utils.formatTime(this.currentTime);
         const total = Utils.formatTime(this.maxTime);
-        this.els.timeDisplay.textContent = `${current} / ${total}`;
+        if (this.els.timeDisplay) {
+            this.els.timeDisplay.textContent = `${current} / ${total}`;
+        }
+
+        const pct = this.maxTime > 0 ? Math.min(100, Math.max(0, (this.currentTime / this.maxTime) * 100)) : 0;
+
+        // Update horizontal scrubber track, thumb, and popup (Matches View)
+        const hProgress = document.getElementById('h-timeline-progress');
+        const hThumb = document.getElementById('h-scrubber-thumb');
+        const hPopup = document.getElementById('h-scrubber-popup');
+        const hPlayBtn = document.getElementById('h-play-btn');
+
+        if (hProgress) {
+            hProgress.style.width = `${pct}%`;
+        }
+        if (hThumb) {
+            hThumb.style.left = `${pct}%`;
+        }
+        if (hPopup) {
+            hPopup.textContent = current;
+        }
+        if (hPlayBtn) {
+            hPlayBtn.textContent = this.playing ? '⏸' : '▶';
+        }
     },
 
     /**

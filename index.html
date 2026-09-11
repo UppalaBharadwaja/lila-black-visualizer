@@ -3,197 +3,419 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LILA BLACK — Tactical Player Journey Visualizer</title>
-    <!-- Tactical Fonts & Leaflet -->
+    <title>LILA BLACK — Player Journey & Telemetry Dashboard</title>
+    <!-- Modern Tech Fonts: Plus Jakarta Sans, Inter, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- Leaflet & Stylesheet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="dark-theme">
-    <!-- Cover Page Banner (Signature PDF Cover Art Style) -->
-    <header class="guide-cover-header">
-        <div class="guide-cover-branding">
-            <div class="guide-tagline-badge">BY DIGIGIRL TRAVELS & LILA GAMES</div>
-            <h1 class="guide-cover-title">THE ULTIMATE JAMAICA TRAVEL GUIDE</h1>
-            <div class="guide-cover-subheading">LEVEL DESIGN TELEMETRY & PLAYER JOURNEY EXPLORER</div>
-        </div>
-        
-        <!-- Global Stats Ribbon -->
-        <div id="stats-bar" class="guide-stats-ribbon">
-            <!-- Populated dynamically by app.js -->
-        </div>
-    </header>
-
-    <!-- Main Guide Magazine Spread Layout -->
-    <div class="guide-magazine-layout">
-        <!-- Left Side: Interactive Editorial Dossier / Filters (Yellow Journal Page) -->
-        <aside class="guide-editorial-panel">
-            <div class="editorial-header">
-                <span class="editorial-tag">SECTION 01</span>
-                <h2>OVERVIEW & TELEMETRY</h2>
-                <div class="editorial-divider"></div>
+<body class="app-body-backdrop">
+    <!-- Main Floating Dashboard App Window (Exact match to Mockup Template) -->
+    <div class="app-window-frame">
+        <!-- Top App Navigation Header -->
+        <header class="app-top-header">
+            <div class="header-brand">
+                <div class="brand-logo-badge">
+                    <svg class="brand-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                </div>
+                <h1 class="brand-title">LILA <span class="brand-title-white">BLACK</span></h1>
             </div>
 
-            <!-- Tabs: OVERVIEW, OPERATIVES, JOURNEY, INTEL -->
-            <nav class="guide-nav-tabs">
-                <button type="button" class="guide-tab-btn active" data-tab="tab-filters">SECTORS</button>
-                <button type="button" class="guide-tab-btn" data-tab="tab-roster">OPERATIVES</button>
-                <button type="button" class="guide-tab-btn" data-tab="tab-stages">JOURNEYS</button>
-                <button type="button" class="guide-tab-btn" data-tab="tab-layers">INTEL</button>
+            <nav class="app-nav-tabs">
+                <button type="button" class="nav-tab-btn" data-tab="tab-overview">Overview</button>
+                <button type="button" class="nav-tab-btn active" data-tab="tab-matches">Matches</button>
+                <button type="button" class="nav-tab-btn" data-tab="tab-heatmaps">Heatmaps</button>
             </nav>
 
-            <!-- Tab 1: Sectors & Match Filters -->
-            <div id="tab-filters" class="guide-tab-content active">
-                <div class="editorial-card">
-                    <h3 class="card-headline">TACTICAL MAP EXPEDITION</h3>
-                    <p class="card-intro">Navigate across active conflict sectors. Use arrows or dropdown to transition maps.</p>
-                    
-                    <div class="map-nav-control">
-                        <button type="button" id="map-prev-btn" class="map-nav-btn" title="Previous Map">◀</button>
-                        <select id="map-filter">
-                            <option value="">All Sectors (Overview)</option>
-                            <option value="AmbroseValley">Ambrose Valley</option>
-                            <option value="GrandRift">Grand Rift</option>
-                            <option value="Lockdown">Lockdown</option>
-                        </select>
-                        <button type="button" id="map-next-btn" class="map-nav-btn" title="Next Map">▶</button>
-                    </div>
+            <div class="header-user-actions">
+                <div class="user-avatar-pill">
+                    <img class="user-profile-img" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&auto=format&fit=crop&q=80" alt="User Avatar">
+                </div>
+            </div>
+        </header>
 
-                    <div class="filter-group">
-                        <label for="date-filter">Deployment Date</label>
-                        <select id="date-filter">
-                            <option value="">All Deployments</option>
-                        </select>
-                    </div>
-
-                    <div class="filter-group">
-                        <label for="match-filter">Engagement Mission ID</label>
-                        <select id="match-filter">
-                            <option value="">Select Engagement</option>
-                        </select>
-                    </div>
-
-                    <div id="match-info" class="editorial-match-info">
-                        <p class="dim">Select a match to load mission telemetry</p>
+        <!-- Main Workspace: Left Filters + Center/Right Content Grid -->
+        <div class="app-content-layout">
+            <!-- Left Sidebar: Filters (Overview View) -->
+            <aside class="app-sidebar-filters view-overview-only">
+                <div class="filters-header-row">
+                    <h2 class="filters-heading">Filters</h2>
+                    <div class="filter-header-controls" title="Adjust panel width and text size">
+                        <button type="button" class="filter-size-btn" id="btn-filter-font-dec" title="Decrease text size / move left">A−</button>
+                        <button type="button" class="filter-size-btn" id="btn-filter-font-reset" title="Reset default size (100%)">100%</button>
+                        <button type="button" class="filter-size-btn" id="btn-filter-font-inc" title="Increase text size / move right">A+</button>
+                        <button type="button" class="filter-size-btn" id="btn-filter-expand-toggle" title="Toggle wide panel">⇹</button>
                     </div>
                 </div>
 
-                <!-- Playback Scrubbing in First Tab -->
-                <div id="playback-panel" class="editorial-card playback-card">
-                    <h3 class="card-headline">TIMELINE & SCRUBBING</h3>
-                    <div class="playback-btn-row">
-                        <button id="play-btn" class="play-btn" title="Toggle Play / Pause">▶</button>
-                        <div class="speed-controls">
-                            <button class="speed-btn active" data-speed="1">1X</button>
-                            <button class="speed-btn" data-speed="2">2X</button>
-                            <button class="speed-btn" data-speed="4">4X</button>
-                            <button class="speed-btn" data-speed="8">8X</button>
+                <!-- Map Selector Pills -->
+                <div class="filter-block">
+                    <label class="filter-label">Map Selector</label>
+                    <div class="map-pills-row">
+                        <button type="button" class="map-pill-btn active" data-map="AmbroseValley">Ambrose Valley</button>
+                        <button type="button" class="map-pill-btn" data-map="GrandRift">Grand Rift</button>
+                    </div>
+                    <div class="map-pills-row" style="margin-top: 6px;">
+                        <button type="button" class="map-pill-btn" data-map="Lockdown">Lockdown</button>
+                    </div>
+                    <!-- Hidden select for JS compatibility -->
+                    <select id="map-filter" style="display:none;">
+                        <option value="AmbroseValley" selected>Ambrose Valley</option>
+                        <option value="GrandRift">Grand Rift</option>
+                        <option value="Lockdown">Lockdown</option>
+                    </select>
+                </div>
+
+                <!-- Date Range Picker -->
+                <div class="filter-block">
+                    <label class="filter-label">Date Range Picker</label>
+                    <div class="date-picker-box">
+                        <span class="input-icon">📅</span>
+                        <select id="date-filter" class="custom-select-bare">
+                            <option value="">09/15/2024 - 09/22/2024</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Match ID Selector -->
+                <div class="filter-block">
+                    <label class="filter-label">Match ID</label>
+                    <div class="match-select-box">
+                        <select id="match-filter" class="custom-select-bare">
+                            <option value="">Select Match ID</option>
+                        </select>
+                        <span class="search-icon">🔍</span>
+                    </div>
+                </div>
+
+                <!-- Event Type Checkboxes -->
+                <div class="filter-block">
+                    <label class="filter-label">Event Type</label>
+                    <div class="event-checkboxes-list">
+                        <label class="checkbox-row">
+                            <input type="checkbox" id="toggle-kills" checked>
+                            <span class="custom-checkbox"></span>
+                            <span class="event-row-text">Kills</span>
+                        </label>
+                        <label class="checkbox-row">
+                            <input type="checkbox" id="toggle-deaths" checked>
+                            <span class="dot-indicator dot-orange">●</span>
+                            <span class="event-row-text">Deaths</span>
+                        </label>
+                        <label class="checkbox-row">
+                            <input type="checkbox" id="toggle-loot" checked>
+                            <span class="dot-indicator dot-loot-square">■</span>
+                            <span class="event-row-text">Loot</span>
+                        </label>
+                        <label class="checkbox-row">
+                            <input type="checkbox" id="toggle-storm" checked>
+                            <span class="dot-indicator dot-purple">●</span>
+                            <span class="event-row-text">Storm Deaths</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Player Type (Humans vs Bots toggle + Radios) -->
+                <div class="filter-block">
+                    <div class="player-type-header">
+                        <span class="filter-label" style="margin-bottom:0;">Player Type</span>
+                        <div class="toggle-switch-wrapper">
+                            <span class="toggle-sublabel">Humans vs Bots</span>
+                            <label class="switch-ui">
+                                <input type="checkbox" id="humans-vs-bots-toggle" checked>
+                                <span class="switch-slider"></span>
+                            </label>
                         </div>
                     </div>
-                    <div class="timeline-container">
-                        <input type="range" id="timeline-slider" min="0" max="1000" value="0">
-                        <span id="time-display">0:00 / 0:00</span>
+
+                    <div class="radio-options-list">
+                        <label class="radio-row">
+                            <input type="radio" name="player-type-filter" value="both" checked>
+                            <span class="custom-radio"></span>
+                            <span>Both</span>
+                        </label>
+                        <label class="radio-row">
+                            <input type="radio" name="player-type-filter" value="humans">
+                            <span class="custom-radio"></span>
+                            <span>Humans Only</span>
+                        </label>
+                        <label class="radio-row">
+                            <input type="radio" name="player-type-filter" value="bots">
+                            <span class="custom-radio"></span>
+                            <span>Bots Only</span>
+                        </label>
                     </div>
+
+                    <!-- Hidden legacy checkboxes for JS compatibility -->
+                    <input type="checkbox" id="toggle-humans" checked style="display:none;">
+                    <input type="checkbox" id="toggle-bots" checked style="display:none;">
+                    <input type="checkbox" id="toggle-poi" checked style="display:none;">
                 </div>
+
+                <!-- Apply Filters Button -->
+                <button type="button" id="btn-apply-filters" class="btn-primary-apply">
+                    Apply Filters
+                </button>
+            </aside>
+            <div class="sidebar-resizer view-overview-only" id="sidebar-resizer" title="Drag left / right to resize filter panel and text size">
+                <div class="resizer-handle-pill"></div>
             </div>
 
-            <!-- Tab 2: Operatives Roster -->
-            <div id="tab-roster" class="guide-tab-content">
-                <div class="editorial-card">
-                    <h3 class="card-headline">FIELD ROSTER</h3>
-                    <p class="card-intro">Select an operative to isolate their route and tactical progression.</p>
-                    <div id="player-roster" class="player-roster-list">
-                        <!-- Populated dynamically -->
+            <!-- Main Right Section: KPI Cards + Tactical Map Grid -->
+            <section class="app-main-stage">
+                <!-- Top 4 KPI Metrics Row -->
+                <div class="kpi-metric-cards-row view-overview-only">
+                    <div class="kpi-metric-card">
+                        <div class="kpi-icon-circle">
+                            <span class="kpi-icon">🎮</span>
+                        </div>
+                        <div class="kpi-metric-details">
+                            <span class="kpi-metric-number" id="kpi-total-matches">796</span>
+                            <span class="kpi-metric-label">Total Matches</span>
+                        </div>
+                    </div>
+                    <div class="kpi-metric-card">
+                        <div class="kpi-icon-circle">
+                            <span class="kpi-icon">👤</span>
+                        </div>
+                        <div class="kpi-metric-details">
+                            <span class="kpi-metric-number" id="kpi-avg-players">48</span>
+                            <span class="kpi-metric-label">Avg Players</span>
+                        </div>
+                    </div>
+                    <div class="kpi-metric-card">
+                        <div class="kpi-icon-circle">
+                            <span class="kpi-icon">💀</span>
+                        </div>
+                        <div class="kpi-metric-details">
+                            <span class="kpi-metric-number" id="kpi-kill-events">18,432</span>
+                            <span class="kpi-metric-label">Kill Events</span>
+                        </div>
+                    </div>
+                    <div class="kpi-metric-card">
+                        <div class="kpi-icon-circle">
+                            <span class="kpi-icon">🌧</span>
+                        </div>
+                        <div class="kpi-metric-details">
+                            <span class="kpi-metric-number" id="kpi-storm-deaths">2,841</span>
+                            <span class="kpi-metric-label">Storm Deaths</span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Tab 3: Journey Stages & Sector Milestones -->
-            <div id="tab-stages" class="guide-tab-content">
-                <div class="editorial-card">
-                    <h3 class="card-headline">EXPEDITION STAGES</h3>
-                    <p class="card-intro">Milestones, sector crossings & mission achievements. Click to fly to location.</p>
-                    <div id="journey-stages" class="journey-stages-container">
-                        <p class="dim">Select an operative to inspect journey progression</p>
+                <!-- Tactical Map Container Row (Overview View) -->
+                <div class="map-and-progression-split view-overview-only">
+                    <!-- Map Card Container -->
+                    <div class="map-card-wrapper">
+                        <div class="map-card-header">
+                            <h3 id="map-match-title" class="map-card-title">Ambrose Valley — Match <span class="match-highlight-badge">#4821</span></h3>
+                            <div class="map-zoom-tools">
+                                <button type="button" id="btn-zoom-in" class="tool-btn" title="Zoom In">+</button>
+                                <button type="button" id="btn-zoom-out" class="tool-btn" title="Zoom Out">—</button>
+                                <button type="button" id="btn-fit-map" class="tool-btn" title="Fit Entire Map">⛶</button>
+                            </div>
+                        </div>
+
+                        <!-- Leaflet Map Canvas with Grid Overlay -->
+                        <div class="tactical-map-viewport" id="viewport-overview">
+                            <!-- Lat/Lng Grid Labels matching mockup -->
+                            <div class="grid-label label-31n-top">31N</div>
+                            <div class="grid-label label-31n-mid">31N</div>
+                            <div class="grid-label label-31n-low">31N</div>
+                            <div class="grid-label label-21n-bottom">21N</div>
+
+                            <div class="grid-axis-bottom">
+                                <span>50W</span>
+                                <span>18W</span>
+                                <span>20W</span>
+                                <span>20W</span>
+                                <span>107W</span>
+                                <span>87E</span>
+                                <span>30E</span>
+                                <span>50E</span>
+                                <span>40E</span>
+                                <span>30E</span>
+                                <span>0E</span>
+                            </div>
+
+                            <div id="map"></div>
+                        </div>
+
+                        <!-- Heatmap pill bar for Overview tab -->
+                        <div class="overview-heatmap-bar">
+                            <span class="overview-heatmap-label">Heatmap:</span>
+                            <div class="heatmap-pills-group">
+                                <label class="heatmap-filter-pill">
+                                    <input type="radio" name="heatmap-mode" value="kills">
+                                    <span>Kill Zones</span>
+                                </label>
+                                <label class="heatmap-filter-pill">
+                                    <input type="radio" name="heatmap-mode" value="deaths">
+                                    <span>Death Zones</span>
+                                </label>
+                                <label class="heatmap-filter-pill">
+                                    <input type="radio" name="heatmap-mode" value="traffic">
+                                    <span>Traffic</span>
+                                </label>
+                                <label class="heatmap-filter-pill">
+                                    <input type="radio" name="heatmap-mode" value="loot">
+                                    <span>Loot Spots</span>
+                                </label>
+                                <button type="button" class="heatmap-clear-btn" id="btn-overview-heatmap-clear">✕ Clear</button>
+                            </div>
+                            <span class="heatmap-count-label" id="heatmap-points-count-overview"></span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Tab 4: Intel, Heatmaps & Visual Toggles -->
-            <div id="tab-layers" class="guide-tab-content">
-                <div class="editorial-card">
-                    <h3 class="card-headline">RADAR INTEL TOGGLES</h3>
-                    <div class="checkbox-grid">
-                        <label><input type="checkbox" id="toggle-humans" checked> <span class="human-color">●</span> Humans</label>
-                        <label><input type="checkbox" id="toggle-bots" checked> <span class="bot-color">●</span> Bots (AI)</label>
-                        <label><input type="checkbox" id="toggle-kills" checked> <span class="kill-color">⚔</span> Kills</label>
-                        <label><input type="checkbox" id="toggle-deaths" checked> <span class="death-color">💀</span> Deaths</label>
-                        <label><input type="checkbox" id="toggle-loot" checked> <span class="loot-color">📦</span> Loot</label>
-                        <label><input type="checkbox" id="toggle-storm" checked> <span class="storm-color">⚡</span> Storm</label>
+                <!-- Bottom Heatmap Control & Density Gradient Bar (Heatmaps View Only) -->
+                <div class="bottom-heatmap-density-bar view-overview-only">
+                    <div class="heatmap-pills-group">
+                        <label class="heatmap-filter-pill">
+                            <input type="radio" name="heatmap-mode" value="kills">
+                            <span>Kill Zones</span>
+                        </label>
+                        <label class="heatmap-filter-pill">
+                            <input type="radio" name="heatmap-mode" value="deaths">
+                            <span>Death Zones</span>
+                        </label>
+                        <label class="heatmap-filter-pill">
+                            <input type="radio" name="heatmap-mode" value="traffic">
+                            <span>Traffic</span>
+                        </label>
+                        <label class="heatmap-filter-pill">
+                            <input type="radio" name="heatmap-mode" value="loot">
+                            <span>Loot Spots</span>
+                        </label>
                     </div>
-                    <div style="margin-top: 10px; border-top: 1px dashed var(--border-light); padding-top: 8px;">
-                        <label><input type="checkbox" id="toggle-poi" checked> <span style="color: var(--brand-yellow);">⚑</span> Sector Location Names</label>
-                    </div>
-                </div>
 
-                <div class="editorial-card">
-                    <h3 class="card-headline">THERMAL HEATMAPS</h3>
-                    <div class="radio-group">
-                        <label><input type="radio" name="heatmap-mode" value="none" checked> None (Satellite View)</label>
-                        <label><input type="radio" name="heatmap-mode" value="kills"> <span class="kill-color">⚔</span> Hot Kill Zones</label>
-                        <label><input type="radio" name="heatmap-mode" value="deaths"> <span class="death-color">💀</span> Casualty Death Zones</label>
-                        <label><input type="radio" name="heatmap-mode" value="traffic"> <span style="color: var(--brand-yellow);">⚲</span> High-Traffic Corridors</label>
-                        <label><input type="radio" name="heatmap-mode" value="loot"> <span class="loot-color">📦</span> Concentrated Loot Spots</label>
-                    </div>
-                </div>
-            </div>
-        </aside>
-
-        <!-- Right Side: Map Canvas & Tactical Presentation Viewport -->
-        <main class="guide-map-viewport">
-            <!-- Top Map Carousel Arrow Bar -->
-            <div class="map-carousel-bar">
-                <button type="button" id="viewport-map-prev-btn" class="carousel-nav-btn" title="Previous Map">◀</button>
-                <div class="carousel-map-title-box">
-                    <span class="carousel-subtitle">TACTICAL SECTOR</span>
-                    <h2 id="carousel-map-name" class="carousel-title">AMBROSE VALLEY</h2>
-                </div>
-                <button type="button" id="viewport-map-next-btn" class="carousel-nav-btn" title="Next Map">▶</button>
-            </div>
-
-            <!-- Floating Map HUD Legend & Quick Controls -->
-            <div class="map-hud-overlay">
-                <div class="hud-panel">
-                    <div class="hud-header-actions">
-                        <div class="hud-title"><span>📡</span> Tactical Radar</div>
-                        <button id="btn-fit-map" class="hud-action-btn" title="Fit Entire Map to Viewport">⛶ Fit Map</button>
-                    </div>
-                    <div class="hud-legend-items">
-                        <div class="legend-row"><span class="legend-dot" style="background:#00d2ff; box-shadow: 0 0 6px #00d2ff;"></span> Human Operative</div>
-                        <div class="legend-row"><span class="legend-dot" style="background:#8b9bb4;"></span> Patrol Bot AI</div>
-                        <div class="legend-row"><span class="legend-dot" style="background:#ff3838; box-shadow: 0 0 6px #ff3838;"></span> Combat Kill</div>
-                        <div class="legend-row"><span class="legend-dot" style="background:#ff9f1a;"></span> Operative Down</div>
-                        <div class="legend-row"><span class="legend-dot" style="background:#2ecc71;"></span> Equipment Cache</div>
-                        <div class="legend-row"><span class="legend-dot" style="background:#9b59b6;"></span> Storm Casualty</div>
+                    <div class="density-gradient-wrapper">
+                        <span class="badge-pill" id="heatmap-points-count" style="color:var(--cyan-text); font-family:var(--font-mono); font-weight:700;">Active Heatmap</span>
+                        <span class="density-text">Low Density</span>
+                        <div class="density-color-gradient-track"></div>
+                        <span class="density-text">High Density</span>
                     </div>
                 </div>
-            </div>
 
-            <!-- Map Viewport -->
-            <div id="map"></div>
+                <!-- MATCHES VIEW (Exact match to media_1789101450539.jpg) -->
+                <div class="matches-view-layout view-matches-only" style="display: none;">
+                    <!-- Top Match Details Header & Breadcrumbs -->
+                    <div class="matches-top-banner">
+                        <div class="matches-breadcrumbs">
+                            <span>Matches</span>
+                            <span class="breadcrumb-sep">&gt;</span>
+                            <span id="breadcrumb-match-title" class="breadcrumb-current">Match <span class="match-highlight-badge">#4821</span> — Ambrose Valley — Oct 3 2024</span>
+                        </div>
+                        <div class="matches-header-row">
+                            <div class="matches-title-select-group">
+                                <h2 id="matches-main-heading" class="matches-title">Match <span class="match-highlight-badge">#4821</span></h2>
+                                <div class="matches-select-dropdown-wrapper">
+                                    <select id="matches-quick-select" class="matches-quick-dropdown" title="Select match to explore">
+                                        <option value="">Select Match...</option>
+                                    </select>
+                                    <span class="dropdown-caret">▾</span>
+                                </div>
+                            </div>
+                            <div class="matches-badges-group">
+                                <span class="badge-pill badge-map" id="badge-map-name">Ambrose Valley</span>
+                                <span class="badge-pill badge-date" id="badge-date">Oct 3 2024</span>
+                                <span class="badge-pill badge-players" id="badge-players">47 Players</span>
+                                <span class="badge-pill badge-duration" id="badge-duration">23:42 Duration</span>
+                            </div>
+                        </div>
+                    </div>
 
-            <!-- Full-Bleed Yellow Motto Banner (From Guide Page 10) -->
-            <footer class="guide-bottom-motto-banner">
-                <div class="motto-content">
-                    <span class="motto-highlight">"OUT OF MANY, ONE PEOPLE"</span>
-                    <span class="motto-sub">— JAMAICA'S NATIONAL MOTTO &bull; LEVEL DESIGN TELEMETRY</span>
+                    <!-- Split Area: Map with Horizontal Timeline + Right Match Sidebar -->
+                    <div class="matches-workspace-split">
+                        <!-- Left/Center: Map Canvas + Horizontal Scrubber Bar -->
+                        <div class="matches-map-column">
+                            <div class="matches-map-frame">
+                                <div class="matches-map-inner-header">
+                                    <span id="matches-frame-map-name">Ambrose Valley</span>
+                                </div>
+                                <div class="tactical-map-viewport" id="viewport-matches">
+                                    <!-- Leaflet map element gets moved here when in Matches tab -->
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Draggable Resizer Handle between Map and Right Sidebar -->
+                        <div class="matches-sidebar-resizer" id="matches-sidebar-resizer" title="Drag left / right to resize match details panel">
+                            <div class="resizer-handle-pill"></div>
+                        </div>
+
+                        <!-- Right Sidebar: Players in Match + Event Log + Match Stats -->
+                        <aside class="matches-sidebar-column">
+                            <!-- Players in Match -->
+                            <div class="sidebar-section-card players-card">
+                                <div class="section-card-header">
+                                    <h4 class="section-card-title">Players in Match</h4>
+                                    <div class="matches-panel-controls" title="Adjust panel width and text size">
+                                        <button type="button" class="filter-size-btn" id="btn-matches-font-dec" title="Narrow panel / decrease text">A−</button>
+                                        <button type="button" class="filter-size-btn" id="btn-matches-font-reset" title="Reset default size">100%</button>
+                                        <button type="button" class="filter-size-btn" id="btn-matches-font-inc" title="Widen panel / increase text">A+</button>
+                                        <button type="button" class="filter-size-btn" id="btn-matches-expand-toggle" title="Toggle wide panel">⇹</button>
+                                        <span class="roster-badge" id="roster-count-badge">47 Total</span>
+                                    </div>
+                                </div>
+                                <div class="players-roster-scroll" id="player-roster">
+                                    <!-- Populated dynamically by updatePlayerRoster -->
+                                </div>
+                            </div>
+
+                            <!-- Real-time / Chronological Event Log -->
+                            <div class="sidebar-section-card event-log-card">
+                                <div class="section-card-header">
+                                    <h4 class="section-card-title">Event Log</h4>
+                                    <span class="badge-live-feed">Feed</span>
+                                </div>
+                                <div class="event-log-scroll" id="event-log-list">
+                                    <!-- Populated dynamically by renderEventLog -->
+                                </div>
+                            </div>
+
+                            <!-- Match Stats 6-Pill Grid -->
+                            <div class="sidebar-section-card match-stats-card">
+                                <div class="section-card-header">
+                                    <h4 class="section-card-title">Match Stats</h4>
+                                </div>
+                                <div class="match-info-content" id="match-info">
+                                    <!-- Populated dynamically by Filters.updateMatchInfo -->
+                                </div>
+                            </div>
+                        </aside>
+                    </div>
                 </div>
-                <div class="motto-legal">
-                    <span>Terms of Service</span>
-                    <span>Privacy Policy</span>
+
+                <!-- Hidden elements for JavaScript compatibility -->
+                <input type="range" id="timeline-slider" min="0" max="1000" value="500" style="display:none;">
+                <span id="time-display" style="display:none;">12:30 / 25:00</span>
+                <div style="display:none;">
+                    <button class="speed-btn active" data-speed="1">1x</button>
+                    <button class="speed-btn" data-speed="2">2x</button>
+                    <button class="speed-btn" data-speed="4">4x</button>
+                    <button class="speed-btn" data-speed="8">8x</button>
+                    <div id="journey-stages"></div>
+                    <h2 id="carousel-map-name">AMBROSE VALLEY</h2>
                 </div>
-            </footer>
-        </main>
+            </section>
+        </div>
     </div>
+
+    <!-- Hidden compatibility buttons for existing handlers -->
+    <button type="button" id="map-prev-btn" style="display:none;"></button>
+    <button type="button" id="map-next-btn" style="display:none;"></button>
+    <button type="button" id="viewport-map-prev-btn" style="display:none;"></button>
+    <button type="button" id="viewport-map-next-btn" style="display:none;"></button>
+    <button type="button" id="play-btn" style="display:none;"></button>
+    <button type="button" id="btn-seek-start" style="display:none;"></button>
+    <button type="button" id="btn-seek-end" style="display:none;"></button>
 
     <!-- Scripts -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>

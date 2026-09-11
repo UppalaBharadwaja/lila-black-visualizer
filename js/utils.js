@@ -22,23 +22,43 @@ const Utils = {
         Killed:        { color: '#ff6d00', icon: '💀', label: 'Player Death', radius: 8 },
         BotKill:       { color: '#ff4081', icon: '⚔', label: 'Bot Kill', radius: 6 },
         BotKilled:     { color: '#ffab40', icon: '💀', label: 'Bot Death', radius: 6 },
-        KilledByStorm: { color: '#aa00ff', icon: '⚡', label: 'Storm Death', radius: 9 },
+        KilledByStorm: { color: '#aa00ff', icon: '🌧', label: 'Storm Death', radius: 9 },
         Loot:          { color: '#00e676', icon: '📦', label: 'Loot', radius: 5 },
     },
 
     /**
-     * Player path colors
+     * Distinct vibrant neon color palette for player routes
      */
-    PLAYER_COLORS: {
-        human: '#00d2ff',
-        bot: '#666',
+    PALETTE: [
+        '#3b82f6', // Electric Cobalt Blue
+        '#10b981', // Emerald Green
+        '#f59e0b', // Radiant Amber Gold
+        '#ec4899', // Hot Pink
+        '#8b5cf6', // Vivid Violet
+        '#06b6d4', // Cyan
+        '#f97316', // Neon Orange
+        '#e11d48', // Crimson Red
+        '#14b8a6', // Teal
+        '#a855f7', // Purple
+    ],
+
+    getPlayerColor(player, index) {
+        if (player.human) {
+            return this.PALETTE[index % this.PALETTE.length];
+        }
+        // Distinct subtle bot colors
+        const botPalette = ['#64748b', '#94a3b8', '#78716c', '#6b7280', '#475569'];
+        return botPalette[index % botPalette.length];
     },
 
     /**
-     * Format milliseconds to mm:ss display
+     * Format seconds or milliseconds to mm:ss display
      */
-    formatTime(ms) {
-        const totalSec = Math.floor(ms / 1000);
+    formatTime(val) {
+        if (!val || isNaN(val) || val <= 0) return '0:00';
+        // Dataset relative times and match durations are in seconds (e.g. 0 to 900 seconds)
+        // If a timestamp is in milliseconds (> 100000), convert to seconds
+        const totalSec = Math.floor(val > 100000 ? val / 1000 : val);
         const min = Math.floor(totalSec / 60);
         const sec = totalSec % 60;
         return `${min}:${sec.toString().padStart(2, '0')}`;
